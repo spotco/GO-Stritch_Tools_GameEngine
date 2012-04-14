@@ -25,13 +25,13 @@ package  {
 				//trace(data[i].x1 + "," + data[i].y1 + " " + data[i].x2 + "," + data[i].y2);
 				var new_i:Line_Island = new Line_Island(data[i].x1, data[i].y1, data[i].x2, data[i].y2);
 				this.islands_array.push(new_i);
-				stage.addChild(new_i);
+				this.addChild(new_i);
 				i++;
 			}
 			player = new Player();
 			player.set_pos(init_pos_x, init_pos_y);
 			player.vx = 5;
-			stage.addChild(player);
+			this.addChild(player);
 			timer = new Timer(20);
 			timer.addEventListener(TimerEvent.TIMER, update);
 			timer.start();
@@ -59,7 +59,6 @@ package  {
 		
 		private function update(e:Event) {
 			if (!this.stage) {
-				trace("2");
 				destroy();
 				return;
 			}

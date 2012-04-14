@@ -33,8 +33,8 @@ package {
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, mouse_down);
 			stage.addEventListener(MouseEvent.MOUSE_UP, mouse_up);
 			
-			init_game_engine("load_me.map");
-			//init_level_editor();
+			//init_game_engine("load_me.map");
+			init_level_editor();
 		}
 		
 		private function init_level_editor() {
