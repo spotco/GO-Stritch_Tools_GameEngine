@@ -16,16 +16,16 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'4/14/2012'</value>
+      <value>'4/20/2012'</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
-      <path-element>C:\Users\spotco\Documents\java fun\GO!strtch\src</path-element>
+      <path-element>C:\Users\munutzer\Desktop\GO-Stritch_Tools_GameEngine\src</path-element>
       <path-element>C:\Program Files (x86)\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
   </compiler>
   <file-specs>
-    <path-element>C:\Users\spotco\Documents\java fun\GO!strtch\src\Main.as</path-element>
+    <path-element>C:\Users\munutzer\Desktop\GO-Stritch_Tools_GameEngine\src\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>

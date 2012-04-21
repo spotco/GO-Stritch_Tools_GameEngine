@@ -1,4 +1,6 @@
 package  {
+	import flash.display.Bitmap;
+	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import com.adobe.serialization.json.*;
@@ -21,9 +23,13 @@ package  {
 		public function init(lvl_data:String) {
 			var data:Object = JSON.decode(lvl_data);
 			var i:int = 0;
-			while (data[i]) {
-				//trace(data[i].x1 + "," + data[i].y1 + " " + data[i].x2 + "," + data[i].y2);
-				var new_i:Line_Island = new Line_Island(data[i].x1, data[i].y1, data[i].x2, data[i].y2);
+			while (data[i]) { //convert to Number
+				var new_i:Line_Island;
+				if (Number(data[i].x1) > Number(data[i].x2)) {
+					new_i = new Line_Island(data[i].x2, data[i].y2, data[i].x1, data[i].y1);
+				} else {
+					new_i = new Line_Island(data[i].x1, data[i].y1, data[i].x2, data[i].y2);
+				}
 				this.islands_array.push(new_i);
 				this.addChild(new_i);
 				i++;
@@ -148,6 +154,7 @@ package  {
 				}
 			}
 			player.set_pos(pos_x, pos_y);
+			player.anim_update();
 			if (pos_y < 0) {
 				player.set_pos(init_pos_x, init_pos_y);
 				player.vy = 0;
