@@ -3,9 +3,16 @@
 	<style type="text/css">
 		body {
 			text-align:center;
+			background-color:#EEEEEE;
 		}
 		#msgout {
 			margin-top:30px;
+		}
+		#swfcontrols {
+			position:absolute;
+			right:0%;
+			background:#AAAAAA;
+			border:3px dashed grey;
 		}
 	</style>
 	
@@ -13,13 +20,24 @@
 		function msg_out(t) {
 			document.getElementById("msgout").value = t;
 		}
+		function json_out() {
+			document.getElementById("GOstrichLevelEditor2").json_out();
+		}
 		function json_in() {
-			document.getElementById("GOstrichLevelEditor2")
+			document.getElementById("GOstrichLevelEditor2").json_in(document.getElementById("msgout").value);
+		}
+		function swf_undo() {
+			document.getElementById("GOstrichLevelEditor2").undo();
 		}
 	</script>
 </head>
 
 <body>
+	<div id="swfcontrols">
+		<input type="button" value="Output JSON (P)" onclick="json_out()" />
+		<br />
+		<input type="button" value="undo (Z)" onclick="swf_undo()" />
+	</div>
 	<object type="application/x-shockwave-flash" id="GOstrichLevelEditor2" data="GOstrichLevelEditor2.swf" width="1000px" height="650px">
 		<param name="menu" value="false">
 		<param name="scale" value="noScale">
@@ -27,19 +45,23 @@
 		<param name="bgcolor" value="">
 		<param name="wmode" value="direct">
 	</object>
+
 	<br />
-	<textarea id="msgout" style="width:70%;height:200px;" readonly="readonly">
+	<textarea id="msgout" style="width:70%;height:200px;">
+GOGODoggy Level Editor v1.0	
+	
 Controls:
 Click to place points/lines
+Arrow keys to move (with shift or control to move faster)
 Shift-click to select a points/lines
 ESC to unselect points/lines
 Z to undo
 Q+click to place object
 W+click to place player starting points/lines
 P to print json
-
-See console for verbose output
-		
+(See console for verbose output)
 	</textarea>
+	<br />
+	<input type="button" value="Load JSON" onclick="json_in()" />
 </body>
 </html>
