@@ -6,6 +6,7 @@ package {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Keyboard;
+	import com.adobe.serialization.json.*;
 
 	public class LevelEditor extends Sprite {
 		
@@ -162,14 +163,83 @@ package {
 			}
 		}
 		
-		private function json_out() {
+		public function json_out() {
 			BrowserOut.msg_to_browser("msg_out", get_current_json());
 		}
 		
+		//json_in('{"start_x":"0","start_y":"0","assert_links":"0","islands":[{"type":"line","x1":"107","y1":"357","x2":"296","y2":"202"},{"type":"line","x1":"296","y1":"202","x2":"557","y2":"299"}],}');
 		public function json_in(json:String) {
+			this.draw_grid();
+			var json_o:Object;
+			try {
+				json_o = JSON.decode(json);
+			} catch (e:Error) {
+				BrowserOut.msg_to_browser("console.log", "JSON parse error: " + e.message);
+				TextRenderer.render_text(Main.spr.graphics, "JSON parse error: " + e.message, 50, 50, 10);
+				return;
+			}
+			BrowserOut.msg_to_browser("console.log", "JSON parsed, loading level...");
 			lines = removeAll(lines);
 			pts = removeAll(pts);
 			objects = removeAll(objects);
+			undo_stack = new Array();
+			cur_sel_pt = null;
+			var pts_hash:Object = new Object();
+			for each(var i:Object in json_o.islands) {
+				var pt1:ClickPoint;
+				var pt2:ClickPoint;
+				var pt1hash:String = i.x1 + "," + i.y1;
+				var pt2hash:String = i.x2 + "," + i.y2;
+				
+				if (pts_hash[pt1hash]) {
+					pt1 = pts_hash[pt1hash];
+				} else {
+					pt1 = new ClickPoint(i.x1, i.y1);
+					pts_hash[pt1hash] = pt1;
+					addChild(pt1);
+					pts.push(pt1);
+				}
+				
+				if (pts_hash[pt2hash]) {
+					pt2 = pts_hash[pt2hash];
+				} else {
+					pt2 = new ClickPoint(i.x2, i.y2);
+					pts_hash[pt2hash] = pt2;
+					addChild(pt2);
+					pts.push(pt2);
+				}
+				
+				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y);
+				lines.push(nline);
+				addChild(nline);
+				BrowserOut.msg_to_browser("console.log", printf("PT1(%f,%f) -> PT2(%f,%f)",pt1.normal_x,pt1.normal_y,pt2.normal_x,pt2.normal_y));
+			}
+			
+			for each(var o:Object in json_o.objects) {
+				var x:Number = Number(o.x);
+				var y:Number = Number(o.y);
+				var label:String = o.label || "";
+				var nobj:ClickPoint = new ClickPoint(x, y, 0x00FFFF, label);
+				objects.push(nobj);
+				addChild(nobj);
+				BrowserOut.msg_to_browser("console.log", printf("Object label(%s) at(%f,%f)", nobj.label,nobj.normal_x, nobj.normal_y));
+			}
+			
+			var pstartx:Number = 0;
+			var pstarty:Number = 0;
+			if (json_o.start_x) {
+				pstartx = json_o.start_x;
+			}
+			if (json_o.start_y) {
+				pstarty = json_o.start_y;
+			}
+			
+			var playerstart:ClickPoint = new ClickPoint(pstartx, pstarty, 0xFFFF00, "Player Start");
+			BrowserOut.msg_to_browser("console.log", printf("Player start at(%f,%f)",playerstart.normal_x, playerstart.normal_y));
+			this.player_start_pt = playerstart;
+			addChild(playerstart);
+			
+			BrowserOut.msg_to_browser("console.log", "Successfully parsed json.");
 		}
 		
 		private function removeAll(a:Array):Array {
@@ -185,12 +255,12 @@ package {
 			}
 			
 			var str:String = "{";
-			str += printf('\n\t"startX":"%f",\n\t"startY":"%f",\n', p_start_x, p_start_y);
+			str += printf('\n\t"start_x":"%f",\n\t"start_y":"%f",\n\t"assert_links":"%f",\n', p_start_x, p_start_y,0);
 			
 			str += '\t"islands":[\n';
 			for (var i = 0; i < lines.length; i++) {
 				var j:LineIsland = lines[i];
-				str += printf('\t\t{"x1":"%f","y1":"%f","x2":"%f","y2":"%f"}', j.x1, j.y1, j.x2, j.y2);
+				str += printf('\t\t{"type":"line","x1":"%f","y1":"%f","x2":"%f","y2":"%f"}', j.x1, j.y1, j.x2, j.y2);
 				if (i != lines.length - 1) {
 					str += ",";
 				}
@@ -201,7 +271,7 @@ package {
 			str += '\t"objects":[\n';
 			for (i = 0; i < objects.length; i++) {
 				var o:ClickPoint = objects[i];
-				str += printf('\t\t{"x":"%f","y":"%f","label":"%s"}', o.normal_x, o.normal_y, o.label);
+				str += printf('\t\t{"type":"","x":"%f","y":"%f","label":"%s"}', o.normal_x, o.normal_y, o.label);
 				if (i != objects.length - 1) {
 					str += ",";
 				}
@@ -214,7 +284,7 @@ package {
 			return str;
 		}
 		
-		private function undo() {
+		public function undo() {
 			if (undo_stack.length == 0) {
 				return;
 			}
@@ -232,7 +302,7 @@ package {
 			if (e.ctrlKey) {
 				mov_val *= 3;
 			} else if (e.shiftKey) {
-				mov_val *= 10;
+				mov_val *= 11;
 			}
 			
 			if (e.keyCode == Keyboard.UP) {

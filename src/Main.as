@@ -13,8 +13,6 @@ package {
 		public static var spr:LevelEditor;
 		
 		public function Main():void {
-			
-
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
@@ -25,9 +23,11 @@ package {
 			stage.addChild(spr);
 			Security.allowDomain("*");
 			try {
-				var connection = ExternalInterface.addCallback("json_in", spr.json_in);
+				ExternalInterface.addCallback("json_in", spr.json_in);
+				ExternalInterface.addCallback("json_out", spr.json_out);
+				ExternalInterface.addCallback("undo", spr.undo);
 			} catch (e:Error) {
-				TextRenderer.render_text(Main.spr.graphics, e.message, 50, 50, 20);
+				TextRenderer.render_text(Main.spr.graphics, e.message, 50, 50, 10);
 			}
 		}
 		
