@@ -13,20 +13,27 @@ package {
 		var current_x:Number = 0;
 		var current_y:Number = 0;
 		
-		var pts:Array = new Array;
+		public var pts:Array = new Array;
 		var lines:Array = new Array;
 		var objects:Array = new Array;
 		var undo_stack:Array = new Array;
 		
 		var player_start_pt:ClickPoint = null;
+		public var obj_label_count:Number = 0;
+		public var cur_sel_pt:ClickPoint = null;
+		public var lastkey:uint = 0x000000;
 		
-		var obj_label_count:Number = 0;
-		
-		var cur_sel_pt:ClickPoint = null;
+		private var grid_draw:Sprite;
+		private var preview_draw:PreviewDrawer;
 		
 		public function LevelEditor() { this.addEventListener(Event.ADDED_TO_STAGE, function() { init();} ); }
 		
 		private function init() {
+			this.grid_draw = new Sprite();
+			addChild(this.grid_draw);
+			
+			this.preview_draw = new PreviewDrawer(this);
+			addChildAt(this.preview_draw,0);
 			draw_grid();
 			add_controls();
 			set_scroll_rect();
@@ -37,31 +44,32 @@ package {
 		}
 		
 		private function draw_grid() {
-			graphics.clear();
+			grid_draw.graphics.clear();
 			
 			var ct = 0;
 			for (var i:int = Math.floor(current_y / 50) * 50 + Main.HEI; i >= current_y; i -= 50) {
-				TextRenderer.render_text(graphics, -(i - Main.HEI) + "px", current_x, i);
-				graphics.lineStyle(1, 0xFFFFFF, 0.3);
-				graphics.moveTo(0, i);
-				graphics.lineTo(current_x + Main.WID, i);
-				graphics.lineStyle(0);
+				TextRenderer.render_text(grid_draw.graphics, -(i - Main.HEI) + "px", current_x, i);
+				grid_draw.graphics.lineStyle(1, 0xFFFFFF, 0.3);
+				grid_draw.graphics.moveTo(0, i);
+				grid_draw.graphics.lineTo(current_x + Main.WID, i);
+				grid_draw.graphics.lineStyle(0);
 				
 			}
 			
 			for (i = Math.floor(current_x / 50) * 50; i <= current_x + Main.WID; i += 50) {
-				TextRenderer.render_text(graphics, i+"px", i, current_y+Main.HEI-20);
-				graphics.lineStyle(1, 0xFFFFFF, 0.3);
-				graphics.moveTo(i, Main.HEI);
-				graphics.lineTo(i, current_y);
-				graphics.lineStyle(0);
+				TextRenderer.render_text(grid_draw.graphics, i+"px", i, current_y+Main.HEI-20);
+				grid_draw.graphics.lineStyle(1, 0xFFFFFF, 0.3);
+				grid_draw.graphics.moveTo(i, Main.HEI);
+				grid_draw.graphics.lineTo(i, current_y);
+				grid_draw.graphics.lineStyle(0);
 				
 			}
 		}
 		
 		private function add_controls() {
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			stage.addEventListener(MouseEvent.CLICK, onClick);
+			stage.addEventListener(MouseEvent.MOUSE_UP, onClick);
+			stage.addEventListener(KeyboardEvent.KEY_UP, function() { lastkey = 0x000000 } );
 		}
 		
 		private function onClick(e:MouseEvent) {
@@ -149,13 +157,14 @@ package {
 			}
 		}
 		
-		private var lastkey:uint = 0x000000;
+		
 		private function onKeyDown(e:KeyboardEvent) {
 			lastkey = e.keyCode;
 			if (e.keyCode == Keyboard.UP || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.LEFT || e.keyCode == Keyboard.RIGHT) {
 				move(e);
 			} else if (e.keyCode == Keyboard.ESCAPE) {
 				desel_all();
+				this.lastkey = 0x000000;
 			} else if (e.keyCode == Keyboard.Z) {
 				undo();
 			} else if (e.keyCode == Keyboard.P) {
@@ -260,7 +269,7 @@ package {
 			str += '\t"islands":[\n';
 			for (var i = 0; i < lines.length; i++) {
 				var j:LineIsland = lines[i];
-				str += printf('\t\t{"type":"line","x1":"%f","y1":"%f","x2":"%f","y2":"%f"}', j.x1, j.y1, j.x2, j.y2);
+				str += printf('\t\t{"type":"line","x1":"%f","y1":"%f","x2":"%f","y2":"%f","hei":"10"}', j.x1, j.y1, j.x2, j.y2);
 				if (i != lines.length - 1) {
 					str += ",";
 				}

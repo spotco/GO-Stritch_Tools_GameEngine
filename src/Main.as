@@ -11,6 +11,7 @@ package {
 		public static var WID:Number = 1000;
 		public static var HEI:Number = 650;
 		public static var spr:LevelEditor;
+		public static var preview_drawer:PreviewDrawer;
 		
 		public function Main():void {
 			if (stage) init();
@@ -21,6 +22,7 @@ package {
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			spr = new LevelEditor;
 			stage.addChild(spr);
+			
 			Security.allowDomain("*");
 			try {
 				ExternalInterface.addCallback("json_in", spr.json_in);
