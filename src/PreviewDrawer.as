@@ -20,6 +20,10 @@ package  {
 		private function timer_update(e:TimerEvent) {
 			this.graphics.clear();
 			
+			if (editor.lastkey == Keyboard.SHIFT) {
+				return;
+			}
+			
 			if (editor.lastkey == Keyboard.W) {
 				this.graphics.beginFill(0xFFFF00);
 				this.graphics.drawCircle(stage.mouseX + editor.current_x, stage.mouseY + editor.current_y, 5);

@@ -10,6 +10,8 @@ package {
 
 	public class LevelEditor extends Sprite {
 		
+		public var LINE_LABELS_ON:Boolean = false;
+		
 		var current_x:Number = 0;
 		var current_y:Number = 0;
 		
@@ -17,11 +19,14 @@ package {
 		var lines:Array = new Array;
 		var objects:Array = new Array;
 		var undo_stack:Array = new Array;
+		var line_ndir_mode:String = LineIsland.NDIR_LEFT;
 		
 		var player_start_pt:ClickPoint = null;
 		public var obj_label_count:Number = 0;
+		public var line_label_count:Number = 0;
 		public var cur_sel_pt:ClickPoint = null;
 		public var lastkey:uint = 0x000000;
+		
 		
 		private var grid_draw:Sprite;
 		private var preview_draw:PreviewDrawer;
@@ -37,6 +42,7 @@ package {
 			draw_grid();
 			add_controls();
 			set_scroll_rect();
+			BrowserOut.msg_to_browser("toggle_ndir", line_ndir_mode);
 		}
 		
 		private function set_scroll_rect() {
@@ -52,7 +58,7 @@ package {
 				grid_draw.graphics.lineStyle(1, 0xFFFFFF, 0.3);
 				grid_draw.graphics.moveTo(0, i);
 				grid_draw.graphics.lineTo(current_x + Main.WID, i);
-				grid_draw.graphics.lineStyle(0);
+				grid_draw.graphics.lineStyle();
 				
 			}
 			
@@ -61,7 +67,7 @@ package {
 				grid_draw.graphics.lineStyle(1, 0xFFFFFF, 0.3);
 				grid_draw.graphics.moveTo(i, Main.HEI);
 				grid_draw.graphics.lineTo(i, current_y);
-				grid_draw.graphics.lineStyle(0);
+				grid_draw.graphics.lineStyle();
 				
 			}
 		}
@@ -69,7 +75,7 @@ package {
 		private function add_controls() {
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			stage.addEventListener(MouseEvent.MOUSE_UP, onClick);
-			stage.addEventListener(KeyboardEvent.KEY_UP, function() { lastkey = 0x000000 } );
+			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp );
 		}
 		
 		private function onClick(e:MouseEvent) {
@@ -121,7 +127,13 @@ package {
 				var added_point = false;
 				
 				if (cur_sel_pt != null) {
-					var nline:LineIsland = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y);
+					var nline:LineIsland;
+					if (LINE_LABELS_ON) {
+						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode, String(line_label_count));
+						line_label_count++;
+					} else {
+						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode);
+					}
 					lines.push(nline);
 					addChild(nline);
 					BrowserOut.msg_to_browser("console.log", printf("Added line from (%f,%f) to (%f,%f)", cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y));
@@ -144,6 +156,11 @@ package {
 			}
 		}
 		
+		public function toggle_line_labels():Boolean {
+			LINE_LABELS_ON = !LINE_LABELS_ON;
+			return LINE_LABELS_ON;
+		}
+		
 		private function sel_pt(pt:ClickPoint) {
 			desel_all();
 			cur_sel_pt = pt;
@@ -157,6 +174,27 @@ package {
 			}
 		}
 		
+		private function toggle_line_ndir_mode() {
+			if (line_ndir_mode == LineIsland.NDIR_LEFT) {
+				line_ndir_mode = LineIsland.NDIR_RIGHT;
+			} else if (line_ndir_mode == LineIsland.NDIR_RIGHT) {
+				line_ndir_mode = LineIsland.NDIR_NONE;
+			} else if (line_ndir_mode == LineIsland.NDIR_NONE) {
+				line_ndir_mode = LineIsland.NDIR_LEFT;
+			}
+			BrowserOut.msg_to_browser("toggle_ndir", line_ndir_mode);
+		}
+		
+		public function change_ndir(tar:String) {
+			line_ndir_mode = tar;
+		}
+		
+		private function onKeyUp(e:KeyboardEvent) { 
+			lastkey = 0x000000;
+			if (e.keyCode == Keyboard.TAB) {
+				toggle_line_ndir_mode();
+			}
+		}
 		
 		private function onKeyDown(e:KeyboardEvent) {
 			lastkey = e.keyCode;
@@ -218,7 +256,7 @@ package {
 					pts.push(pt2);
 				}
 				
-				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y);
+				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y, i.ndir, i.label);
 				lines.push(nline);
 				addChild(nline);
 				BrowserOut.msg_to_browser("console.log", printf("PT1(%f,%f) -> PT2(%f,%f)",pt1.normal_x,pt1.normal_y,pt2.normal_x,pt2.normal_y));
@@ -269,7 +307,7 @@ package {
 			str += '\t"islands":[\n';
 			for (var i = 0; i < lines.length; i++) {
 				var j:LineIsland = lines[i];
-				str += printf('\t\t{"type":"line","x1":"%f","y1":"%f","x2":"%f","y2":"%f","hei":"10"}', j.x1, j.y1, j.x2, j.y2);
+				str += printf('\t\t{"type":"line", "x1":"%f", "y1":"%f", "x2":"%f", "y2":"%f", "hei":"100", "ndir":"%s", "label":"%s"}', j.x1, j.y1, j.x2, j.y2, j.ndir, j.label);
 				if (i != lines.length - 1) {
 					str += ",";
 				}
@@ -280,7 +318,7 @@ package {
 			str += '\t"objects":[\n';
 			for (i = 0; i < objects.length; i++) {
 				var o:ClickPoint = objects[i];
-				str += printf('\t\t{"type":"","x":"%f","y":"%f","label":"%s"}', o.normal_x, o.normal_y, o.label);
+				str += printf('\t\t{"type":"", "x":"%f", "y":"%f", "label":"%s"}', o.normal_x, o.normal_y, o.label);
 				if (i != objects.length - 1) {
 					str += ",";
 				}

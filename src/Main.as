@@ -28,6 +28,8 @@ package {
 				ExternalInterface.addCallback("json_in", spr.json_in);
 				ExternalInterface.addCallback("json_out", spr.json_out);
 				ExternalInterface.addCallback("undo", spr.undo);
+				ExternalInterface.addCallback("change_ndir", spr.change_ndir);
+				ExternalInterface.addCallback("toggle_line_labels", spr.toggle_line_labels);
 			} catch (e:Error) {
 				TextRenderer.render_text(Main.spr.graphics, e.message, 50, 50, 10);
 			}

@@ -11,6 +11,15 @@
 		#swfcontrols {
 			position:absolute;
 			right:0%;
+			top:0%;
+			height:100px;
+			background:#AAAAAA;
+			border:3px dashed grey;
+		}
+		#ndircontrols {
+			position:absolute;
+			right:0%;
+			top:120px;
 			background:#AAAAAA;
 			border:3px dashed grey;
 		}
@@ -29,15 +38,49 @@
 		function swf_undo() {
 			document.getElementById("GOstrichLevelEditor2").undo();
 		}
+		function toggle_ndir(tar) {
+			var a = document.querySelectorAll(".ndir_button");
+			for (var i = 0; i < a.length; i++) {
+				if (a[i].value == tar) {
+					a[i].disabled = true;
+				} else {
+					a[i].disabled = false;
+				}
+			}
+			console.log("ndir changed to: "+tar);
+		}
+		function change_ndir(tar) {
+			document.getElementById("GOstrichLevelEditor2").change_ndir(tar);
+			toggle_ndir(tar);
+		}
+		function toggle_line_labels() {
+			var status = document.getElementById("GOstrichLevelEditor2").toggle_line_labels();
+			document.getElementById("toggle_line_labels").value = "Line Labels:"+status;
+		}
 	</script>
 </head>
 
 <body>
 	<div id="swfcontrols">
+		<b>Editor Controls</b>
+		<br />
 		<input type="button" value="Output JSON (P)" onclick="json_out()" />
 		<br />
-		<input type="button" value="undo (Z)" onclick="swf_undo()" />
+		<input type="button" value="Undo (Z)" onclick="swf_undo()" />
+		<br />
+		<input type="button" value="Line Labels:false" id="toggle_line_labels" onclick="toggle_line_labels()" />
 	</div>
+		
+	<div id="ndircontrols">
+		<b>Line Normal Dir(TAB)</b>
+		<br />(ccw)
+		<input type="button" value="left" class="ndir_button" onclick="change_ndir('left');" />
+		<br />(cw)
+		<input type="button" value="right" class="ndir_button" onclick="change_ndir('right');" />
+		<br />(nofall)
+		<input type="button" value="none" class="ndir_button" onclick="change_ndir('none');" />
+	</div>
+	
 	<object type="application/x-shockwave-flash" id="GOstrichLevelEditor2" data="GOstrichLevelEditor2.swf" width="1000px" height="650px">
 		<param name="menu" value="false">
 		<param name="scale" value="noScale">
@@ -47,8 +90,9 @@
 	</object>
 
 	<br />
-	<textarea id="msgout" style="width:70%;height:200px;">
-GOGODoggy Level Editor v1.0	
+	<textarea id="msgout" style="width:80%;height:200px;">
+GOGODoggy Level Editor v1.1
+TODO:assert links calculation
 	
 Controls:
 Click to place points/lines
@@ -59,6 +103,7 @@ Z to undo
 Q+click to place object
 W+click to place player starting points/lines
 P to print json
+TAB to change line normal direction (this changes the landing direction onto the island)
 (See console for verbose output)
 	</textarea>
 	<br />
