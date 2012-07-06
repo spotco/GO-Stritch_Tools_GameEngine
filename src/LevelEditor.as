@@ -11,6 +11,7 @@ package {
 	public class LevelEditor extends Sprite {
 		
 		public var LINE_LABELS_ON:Boolean = false;
+		public var CAN_FALL_THROUGH_LINE:Boolean = true;
 		
 		var current_x:Number = 0;
 		var current_y:Number = 0;
@@ -129,10 +130,10 @@ package {
 				if (cur_sel_pt != null) {
 					var nline:LineIsland;
 					if (LINE_LABELS_ON) {
-						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode, String(line_label_count));
+						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode, String(line_label_count),CAN_FALL_THROUGH_LINE);
 						line_label_count++;
 					} else {
-						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode);
+						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode,"",CAN_FALL_THROUGH_LINE);
 					}
 					lines.push(nline);
 					addChild(nline);
@@ -178,8 +179,6 @@ package {
 			if (line_ndir_mode == LineIsland.NDIR_LEFT) {
 				line_ndir_mode = LineIsland.NDIR_RIGHT;
 			} else if (line_ndir_mode == LineIsland.NDIR_RIGHT) {
-				line_ndir_mode = LineIsland.NDIR_NONE;
-			} else if (line_ndir_mode == LineIsland.NDIR_NONE) {
 				line_ndir_mode = LineIsland.NDIR_LEFT;
 			}
 			BrowserOut.msg_to_browser("toggle_ndir", line_ndir_mode);
@@ -256,7 +255,7 @@ package {
 					pts.push(pt2);
 				}
 				
-				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y, i.ndir, i.label);
+				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y, i.ndir, i.label, i.can_fall == "true");
 				lines.push(nline);
 				addChild(nline);
 				BrowserOut.msg_to_browser("console.log", printf("PT1(%f,%f) -> PT2(%f,%f)",pt1.normal_x,pt1.normal_y,pt2.normal_x,pt2.normal_y));
@@ -307,7 +306,7 @@ package {
 			str += '\t"islands":[\n';
 			for (var i = 0; i < lines.length; i++) {
 				var j:LineIsland = lines[i];
-				str += printf('\t\t{"type":"line", "x1":"%f", "y1":"%f", "x2":"%f", "y2":"%f", "hei":"100", "ndir":"%s", "label":"%s"}', j.x1, j.y1, j.x2, j.y2, j.ndir, j.label);
+				str += printf('\t\t{"type":"line", "x1":"%f", "y1":"%f", "x2":"%f", "y2":"%f", "hei":"100", "ndir":"%s", "can_fall":"%s", "label":"%s"}', j.x1, j.y1, j.x2, j.y2, j.ndir, j.can_fall, j.label);
 				if (i != lines.length - 1) {
 					str += ",";
 				}

@@ -8,21 +8,22 @@ package
 		
 		public static var NDIR_LEFT:String = "left";
 		public static var NDIR_RIGHT:String = "right";
-		public static var NDIR_NONE:String = "none";
 		
 		public var x1:Number;
 		public var y1:Number;
 		public var x2:Number;
 		public var y2:Number;
 		public var ndir:String;
+		public var can_fall:Boolean;
 		public var label:String;
 		
-		public function LineIsland(x1:Number,y1:Number,x2:Number,y2:Number,dir:String = "left",label:String = "") {
+		public function LineIsland(x1:Number,y1:Number,x2:Number,y2:Number,dir:String = "left",label:String = "",can_fall:Boolean = true) {
 			this.x1 = x1;
 			this.x2 = x2;
 			this.y1 = y1;
 			this.y2 = y2;
 			this.ndir = dir;
+			this.can_fall = can_fall;
 			this.x = 0;
 			this.y = 0;
 			this.label = label;
@@ -68,6 +69,10 @@ package
 			var color:uint = 0x0000FF;
 			var alpha:Number = 0.5;
 			
+			if (!can_fall) {
+				color = 0xFF0000;
+			}
+			
 			var dir_vec:Vector3D = new Vector3D(x2 - x1, Common.normal_tofrom_stage_coord(y2) - Common.normal_tofrom_stage_coord(y1),0);
 			var z_vec:Vector3D = new Vector3D(0, 0, 1);
 			var normal_vec:Vector3D = dir_vec.crossProduct(z_vec);
@@ -78,8 +83,6 @@ package
 				normal_vec.scaleBy(1);
 			} else if (this.ndir == LineIsland.NDIR_RIGHT) {
 				normal_vec.scaleBy( -1);
-			} else if (this.ndir == LineIsland.NDIR_NONE) {
-				return;
 			}
 			
 			var pt_centre:Point = new Point((x2 + x1) / 2, Common.normal_tofrom_stage_coord((y2 + y1) / 2));

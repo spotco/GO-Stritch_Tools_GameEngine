@@ -12,16 +12,19 @@
 			position:absolute;
 			right:0%;
 			top:0%;
-			height:100px;
+			height:150px;
 			background:#AAAAAA;
 			border:3px dashed grey;
 		}
 		#ndircontrols {
 			position:absolute;
 			right:0%;
-			top:120px;
+			top:170px;
 			background:#AAAAAA;
 			border:3px dashed grey;
+		}
+		input {
+			height:30px;
 		}
 	</style>
 	
@@ -57,6 +60,10 @@
 			var status = document.getElementById("GOstrichLevelEditor2").toggle_line_labels();
 			document.getElementById("toggle_line_labels").value = "Line Labels:"+status;
 		}
+		function toggle_can_fall() {
+			var status = document.getElementById("GOstrichLevelEditor2").toggle_can_fall();
+			document.getElementById("toggle_can_fall").value = "Fall On Line:"+status;
+		}
 	</script>
 </head>
 
@@ -69,6 +76,8 @@
 		<input type="button" value="Undo (Z)" onclick="swf_undo()" />
 		<br />
 		<input type="button" value="Line Labels:false" id="toggle_line_labels" onclick="toggle_line_labels()" />
+		<br />
+		<input type="button" value="Fall On Line:true" id="toggle_can_fall" onclick="toggle_can_fall()" />
 	</div>
 		
 	<div id="ndircontrols">
@@ -77,8 +86,6 @@
 		<input type="button" value="left" class="ndir_button" onclick="change_ndir('left');" />
 		<br />(cw)
 		<input type="button" value="right" class="ndir_button" onclick="change_ndir('right');" />
-		<br />(nofall)
-		<input type="button" value="none" class="ndir_button" onclick="change_ndir('none');" />
 	</div>
 	
 	<object type="application/x-shockwave-flash" id="GOstrichLevelEditor2" data="GOstrichLevelEditor2.swf" width="1000px" height="650px">
@@ -90,7 +97,7 @@
 	</object>
 
 	<br />
-	<textarea id="msgout" style="width:80%;height:200px;">
+	<textarea id="msgout" style="width:100%;height:200px;">
 GOGODoggy Level Editor v1.1
 TODO:assert links calculation
 	

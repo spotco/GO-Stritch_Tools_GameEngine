@@ -30,6 +30,10 @@ package {
 				ExternalInterface.addCallback("undo", spr.undo);
 				ExternalInterface.addCallback("change_ndir", spr.change_ndir);
 				ExternalInterface.addCallback("toggle_line_labels", spr.toggle_line_labels);
+				ExternalInterface.addCallback("toggle_can_fall", function() {
+					spr.CAN_FALL_THROUGH_LINE = !spr.CAN_FALL_THROUGH_LINE;
+					return spr.CAN_FALL_THROUGH_LINE;
+				});
 			} catch (e:Error) {
 				TextRenderer.render_text(Main.spr.graphics, e.message, 50, 50, 10);
 			}
