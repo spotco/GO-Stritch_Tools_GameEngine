@@ -105,7 +105,16 @@ package {
 				lastkey = 0x000000;
 			} else if (lastkey == Keyboard.Q) {
 				desel_all();
-				var newobj:GameObject = new GameObject(click_x, click_y, cur_obj_type, String(obj_label_count)); 
+				
+				
+				var newobj:GameObject;
+				if (cur_obj_type == GameObject.OBJ_WATER && pts[0]) {
+					var wid = pts[pts.length-1].x - click_x;
+					newobj = new LineGameObject(click_x, click_y, cur_obj_type, wid, cur_island_hei, String(obj_label_count));
+					BrowserOut.msg_to_browser("console.log", String(wid));
+				} else {
+					newobj = new GameObject(click_x, click_y, cur_obj_type, String(obj_label_count));
+				}
 				
 				objects.push(newobj);
 				addChild(newobj);
