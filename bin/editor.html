@@ -12,14 +12,14 @@
 			position:absolute;
 			right:0%;
 			top:0%;
-			height:150px;
+			height:170px;
 			background:#AAAAAA;
 			border:3px dashed grey;
 		}
 		#ndircontrols {
 			position:absolute;
 			right:0%;
-			top:170px;
+			top:190px;
 			background:#AAAAAA;
 			border:3px dashed grey;
 		}
@@ -79,6 +79,15 @@
 			}
 			document.getElementById(t).disabled = true;
 		}
+		function push_island_hei() {
+			var val = document.getElementById("isl_hei").value;
+			if (parseInt(val)) {
+				val = parseInt(val);
+				document.getElementById("GOstrichLevelEditor2").push_island_hei(val);
+			} else {
+				alert("nonnumeric value");
+			}
+		}
 	</script>
 </head>
 
@@ -86,13 +95,16 @@
 	<div id="swfcontrols">
 		<b>Editor Controls</b>
 		<br />
-		<input type="button" value="Output JSON (P)" onclick="json_out()" />
+		<input type="button"  value="Output JSON (P)" onclick="json_out()" />
 		<br />
 		<input type="button" value="Undo (Z)" onclick="swf_undo()" />
 		<br />
 		<input type="button" value="Line Labels:false" id="toggle_line_labels" onclick="toggle_line_labels()" />
 		<br />
 		<input type="button" value="Fall On Line:true" id="toggle_can_fall" onclick="toggle_can_fall()" />
+		<br />
+		<input type="text" id="isl_hei" value="50" size=5 />
+		<input type="button" value="isl_hei" id="island_hei_submit" onclick="push_island_hei()" />
 	</div>
 		
 	<div id="ndircontrols">

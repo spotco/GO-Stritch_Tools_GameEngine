@@ -49,6 +49,7 @@ package  {
 				img = new OBJ_WATER as Bitmap;
 				objtype = "water";
 			} else {
+				objtype = "";
 				TextRenderer.render_text(Main.spr.graphics, "gobj_err:"+type, 50, 50, 10);
 			}
 			

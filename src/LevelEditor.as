@@ -13,7 +13,8 @@ package {
 		public var LINE_LABELS_ON:Boolean = false;
 		public var CAN_FALL_THROUGH_LINE:Boolean = true;
 		
-		public var cur_obj_type;
+		public var cur_obj_type = GameObject.OBJ_BONE;
+		public var cur_island_hei = 50;
 		
 		var current_x:Number = 0;
 		var current_y:Number = 0;
@@ -132,10 +133,10 @@ package {
 				if (cur_sel_pt != null) {
 					var nline:LineIsland;
 					if (LINE_LABELS_ON) {
-						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode, String(line_label_count),CAN_FALL_THROUGH_LINE);
+						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode, String(line_label_count),cur_island_hei,CAN_FALL_THROUGH_LINE);
 						line_label_count++;
 					} else {
-						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode,"",CAN_FALL_THROUGH_LINE);
+						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode,"",cur_island_hei,CAN_FALL_THROUGH_LINE);
 					}
 					lines.push(nline);
 					addChild(nline);
@@ -257,7 +258,7 @@ package {
 					pts.push(pt2);
 				}
 				
-				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y, i.ndir, i.label, i.can_fall == "true");
+				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y, i.ndir, i.label, 50, i.can_fall == "true");
 				lines.push(nline);
 				addChild(nline);
 				BrowserOut.msg_to_browser("console.log", printf("PT1(%f,%f) -> PT2(%f,%f)",pt1.normal_x,pt1.normal_y,pt2.normal_x,pt2.normal_y));
@@ -310,7 +311,7 @@ package {
 				jso["objects"].push(objects[i].get_jsonobject());
 			}
 			
-			return JSON.encode(jso, true,100);
+			return JSON.encode(jso, true,120);
 		}
 		
 		public function undo() {

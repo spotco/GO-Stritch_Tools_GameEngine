@@ -35,6 +35,9 @@ package {
 					spr.CAN_FALL_THROUGH_LINE = !spr.CAN_FALL_THROUGH_LINE;
 					return spr.CAN_FALL_THROUGH_LINE;
 				});
+				ExternalInterface.addCallback("push_island_hei", function(t) {
+					spr.cur_island_hei = Number(t);
+				});
 				ExternalInterface.addCallback("change_object_type",function(t) {
 					if (t == "spike") {
 						spr.cur_obj_type = GameObject.OBJ_SPIKE;

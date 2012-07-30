@@ -16,13 +16,15 @@ package
 		public var ndir:String;
 		public var can_fall:Boolean;
 		public var label:String;
+		public var hei:Number;
 		
-		public function LineIsland(x1:Number,y1:Number,x2:Number,y2:Number,dir:String = "left",label:String = "",can_fall:Boolean = true) {
+		public function LineIsland(x1:Number,y1:Number,x2:Number,y2:Number,dir:String = "left",label:String = "",hei:Number=50,can_fall:Boolean = true) {
 			this.x1 = x1;
 			this.x2 = x2;
 			this.y1 = y1;
 			this.y2 = y2;
 			this.ndir = dir;
+			this.hei = hei;
 			this.can_fall = can_fall;
 			this.x = 0;
 			this.y = 0;
@@ -33,7 +35,7 @@ package
 		}
 		
 		public function get_jsonobject() {
-			return { x1:x1, y1:y1, x2:x2, y2:y2, ndir:ndir, can_fall:can_fall, label:label };
+			return { x1:x1, y1:y1, x2:x2, y2:y2, type:"line", hei:hei, ndir:ndir, can_fall:can_fall, label:label };
 		}
 		
 		private function draw() {
@@ -109,6 +111,30 @@ package
 			graphics.beginFill(color, alpha);
 			graphics.drawTriangles(tri);
 			graphics.endFill();
+			
+			draw_fillhei(normal_vec);
+		}
+		
+		private function draw_fillhei(normal_vec:Vector3D) {
+			normal_vec.normalize();
+			normal_vec.scaleBy(-hei);
+			
+			var tri:Vector.<Number> = new Vector.<Number>();
+			tri.push(x1, Common.normal_tofrom_stage_coord(y1));
+			tri.push(x2, Common.normal_tofrom_stage_coord(y2));
+			tri.push(x1 + normal_vec.x, Common.normal_tofrom_stage_coord(y1) + normal_vec.y);
+			
+			graphics.beginFill(0x0000FF, 0.4);
+			graphics.drawTriangles(tri);
+			
+			tri = new Vector.<Number>();
+			tri.push(x2, Common.normal_tofrom_stage_coord(y2));
+			tri.push(x1 + normal_vec.x, Common.normal_tofrom_stage_coord(y1) + normal_vec.y);
+			tri.push(x2 + normal_vec.x, Common.normal_tofrom_stage_coord(y2) + normal_vec.y);
+			graphics.drawTriangles(tri);
+			
+			graphics.endFill();
+			
 		}
 		
 		private function draw_arrowhead() {
