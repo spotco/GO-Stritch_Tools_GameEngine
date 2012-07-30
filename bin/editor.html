@@ -23,6 +23,12 @@
 			background:#AAAAAA;
 			border:3px dashed grey;
 		}
+		#objectcontrols {
+			position:absolute;
+			background:#AAAAAA;
+			border:3px dashed grey;
+			left:0px;
+		}
 		input {
 			height:30px;
 		}
@@ -64,6 +70,15 @@
 			var status = document.getElementById("GOstrichLevelEditor2").toggle_can_fall();
 			document.getElementById("toggle_can_fall").value = "Fall On Line:"+status;
 		}
+		function change_object_type(t) {
+			document.getElementById("GOstrichLevelEditor2").change_object_type(t);
+			
+			var obj = document.querySelectorAll("#objectcontrols > input");
+			for(var i = 0; i < obj.length; i++) {
+				obj[i].disabled = false;
+			}
+			document.getElementById(t).disabled = true;
+		}
 	</script>
 </head>
 
@@ -86,6 +101,19 @@
 		<input type="button" value="left" class="ndir_button" onclick="change_ndir('left');" />
 		<br />(cw)
 		<input type="button" value="right" class="ndir_button" onclick="change_ndir('right');" />
+	</div>
+	
+	<div id="objectcontrols">
+		<b>Object</b><br />
+		<input type="button" id="spike" value="spike"  class="objecttype_button" onclick="change_object_type('spike');" /><br />
+		<input type="button" id="jumppad" value="jumppad" class="objecttype_button" onclick="change_object_type('jumppad');" /><br />
+		<input type="button" id="bone" value="bone" class="objecttype_button" onclick="change_object_type('bone');" /><br />
+		<input type="button" id="cape" value="cape" class="objecttype_button" onclick="change_object_type('cape');" /><br />
+		<input type="button" id="rocket" value="rocket" class="objecttype_button" onclick="change_object_type('rocket');" /><br />
+		<input type="button" id="checkpoint" value="checkpoint" class="objecttype_button" onclick="change_object_type('checkpoint');" /><br />
+		<input type="button" id="boost" value="boost" class="objecttype_button" onclick="change_object_type('boost');" /><br />
+		<input type="button" id="water" value="water" class="objecttype_button" onclick="change_object_type('water');" /><br />
+		<input type="button" id="game_end" value="game_end" class="objecttype_button" onclick="change_object_type('game_end');" /><br />
 	</div>
 	
 	<object type="application/x-shockwave-flash" id="GOstrichLevelEditor2" data="GOstrichLevelEditor2.swf" width="1000px" height="650px">

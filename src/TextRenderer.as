@@ -21,8 +21,8 @@ package  {
 			tf.text = text;
 			var text_bitmap:BitmapData = new BitmapData(tf.width, tf.height, true, 0x00000000);
 			text_bitmap.draw(tf);
-			trace(tf.textWidth);
-			trace(tf.textHeight);
+			//trace(tf.textWidth);
+			//trace(tf.textHeight);
 			
 			var typeTextTranslationX:Number =  x;
 			var typeTextTranslationY:Number = y;

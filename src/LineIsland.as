@@ -32,6 +32,10 @@ package
 			this.mouseEnabled = false;
 		}
 		
+		public function get_jsonobject() {
+			return { x1:x1, y1:y1, x2:x2, y2:y2, ndir:ndir, can_fall:can_fall, label:label };
+		}
+		
 		private function draw() {
 			graphics.lineStyle(3, 0x0000FF);
 			graphics.moveTo(x1, Common.normal_tofrom_stage_coord(y1));

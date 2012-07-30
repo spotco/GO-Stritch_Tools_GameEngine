@@ -13,6 +13,8 @@ package {
 		public var LINE_LABELS_ON:Boolean = false;
 		public var CAN_FALL_THROUGH_LINE:Boolean = true;
 		
+		public var cur_obj_type;
+		
 		var current_x:Number = 0;
 		var current_y:Number = 0;
 		
@@ -102,7 +104,7 @@ package {
 				lastkey = 0x000000;
 			} else if (lastkey == Keyboard.Q) {
 				desel_all();
-				var newobj:ClickPoint = new ClickPoint(click_x, click_y, 0x00FFFF, String(obj_label_count));
+				var newobj:GameObject = new GameObject(click_x, click_y, cur_obj_type, String(obj_label_count)); 
 				
 				objects.push(newobj);
 				addChild(newobj);
@@ -293,41 +295,22 @@ package {
 		}
 		
 		public function get_current_json():String {
-			var p_start_x = 0;
-			var p_start_y = 0;
-			if (player_start_pt != null) {
-				p_start_x = player_start_pt.normal_x;
-				p_start_y = player_start_pt.normal_y;
-			}
+			var jso:Object = { };
+			jso["start_x"] = player_start_pt != null ? player_start_pt.x : 0;
+			jso["start_y"] = player_start_pt != null ? player_start_pt.y : 0;
+			jso["assert_links"] = 0;
 			
-			var str:String = "{";
-			str += printf('\n\t"start_x":"%f",\n\t"start_y":"%f",\n\t"assert_links":"%f",\n', p_start_x, p_start_y,0);
-			
-			str += '\t"islands":[\n';
+			jso["islands"] = [];
 			for (var i = 0; i < lines.length; i++) {
-				var j:LineIsland = lines[i];
-				str += printf('\t\t{"type":"line", "x1":"%f", "y1":"%f", "x2":"%f", "y2":"%f", "hei":"100", "ndir":"%s", "can_fall":"%s", "label":"%s"}', j.x1, j.y1, j.x2, j.y2, j.ndir, j.can_fall, j.label);
-				if (i != lines.length - 1) {
-					str += ",";
-				}
-				str += "\n";
+				jso["islands"].push(lines[i].get_jsonobject());
 			}
-			str += "\t],\n\n";
 			
-			str += '\t"objects":[\n';
+			jso["objects"] = [];
 			for (i = 0; i < objects.length; i++) {
-				var o:ClickPoint = objects[i];
-				str += printf('\t\t{"type":"", "x":"%f", "y":"%f", "label":"%s"}', o.normal_x, o.normal_y, o.label);
-				if (i != objects.length - 1) {
-					str += ",";
-				}
-				str += "\n";
+				jso["objects"].push(objects[i].get_jsonobject());
 			}
-			str += '\t]\n';
 			
-			
-			str += "}";
-			return str;
+			return JSON.encode(jso, true,100);
 		}
 		
 		public function undo() {

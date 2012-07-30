@@ -1,4 +1,6 @@
 /*
+  Copyright (c) 2009, Lawrence S. Maccherone, Jr.
+  
   Copyright (c) 2008, Adobe Systems Incorporated
   All rights reserved.
 
@@ -8,11 +10,11 @@
 
   * Redistributions of source code must retain the above copyright notice, 
     this list of conditions and the following disclaimer.
-
+  
   * Redistributions in binary form must reproduce the above copyright
     notice, this list of conditions and the following disclaimer in the 
     documentation and/or other materials provided with the distribution.
-
+  
   * Neither the name of Adobe Systems Incorporated nor the names of its 
     contributors may be used to endorse or promote products derived from 
     this software without specific prior written permission.
@@ -30,16 +32,26 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-package com.adobe.serialization.json
+package com.adobe.serialization.json 
 {
-	
+
 	import flash.utils.describeType;
+
+	public class JSONEncoder {
 	
-	public class JSONEncoder
-	{
-		
 		/** The string that is going to represent the object we're encoding */
 		private var jsonString:String;
+		
+		/** The current level */
+		private var level:int;
+		
+		/** Above this length, an object or array will be split into multiple lines. Any value 2 or below will always split. */
+		private var maxLength:int;
+		
+		/** When true, the encoder will add spaces and split Arrays and Objects over maxLength into multiple lines */
+		private var pretty:Boolean;
+		
+		static private const tabWidth:int = 4;
 		
 		/**
 		 * Creates a new JSONEncoder.
@@ -49,8 +61,14 @@ package com.adobe.serialization.json
 		 * @playerversion Flash 9.0
 		 * @tiptext
 		 */
-		public function JSONEncoder( value:* )
-		{
+		public function JSONEncoder( value:*, pretty:Boolean=false, maxLength:int=60 ) {
+			level = 0;
+			this.pretty = pretty;
+			if (pretty) {
+				this.maxLength = maxLength;
+			} else {
+				this.maxLength = int.MAX_VALUE;
+			}
 			jsonString = convertToString( value );
 		}
 		
@@ -63,47 +81,62 @@ package com.adobe.serialization.json
 		 * @playerversion Flash 9.0
 		 * @tiptext
 		 */
-		public function getString():String
-		{
+		public function getString():String {
 			return jsonString;
 		}
 		
 		/**
 		 * Converts a value to it's JSON string equivalent.
 		 *
-		 * @param value The value to convert.  Could be any
+		 * @param value The value to convert.  Could be any 
 		 *		type (object, number, array, etc)
 		 */
-		private function convertToString( value:* ):String
-		{
+		private function convertToString( value:* ):String {
+			
+			var temp:String;
+			
 			// determine what value is and convert it based on it's type
-			if ( value is String )
-			{
+			if ( value is String ) {
+				
 				// escape the string so it's formatted correctly
 				return escapeString( value as String );
-			}
-			else if ( value is Number )
-			{
-				// only encode numbers that finate
-				return isFinite( value as Number ) ? value.toString() : "null";
-			}
-			else if ( value is Boolean )
-			{
+				
+			} else if ( value is Number ) {
+				
+				// only encode numbers that are finite
+				return isFinite( value as Number) ? value.toString() : "null";
+
+			} else if ( value is Boolean ) {
+				
 				// convert boolean to string easily
 				return value ? "true" : "false";
-			}
-			else if ( value is Array )
-			{
-				// call the helper method to convert an array
-				return arrayToString( value as Array );
-			}
-			else if ( value is Object && value != null )
-			{
-				// call the helper method to convert an object
-				return objectToString( value );
-			}
 
-			return "null";
+			} else if ( value is Array ) {
+			
+				if (maxLength <= 2) {
+					temp = arrayToStringPretty( value as Array );
+				} else {
+					// call the helper method to convert an array
+					temp = arrayToString( value as Array );
+					if (temp.length > maxLength) {
+						temp = arrayToStringPretty( value as Array );
+					}
+				}
+				return temp;
+			
+			} else if ( value is Object && value != null ) {
+				if (maxLength <= 2) {
+					temp = objectToStringPretty( value );
+				} else {			
+					// call the helper method to convert an object
+					temp = objectToString( value );
+					if (temp.length > maxLength) {
+						temp = objectToStringPretty( value );
+					}
+				}	
+				return temp;				
+			}
+            return "null";
 		}
 		
 		/**
@@ -113,8 +146,7 @@ package com.adobe.serialization.json
 		 * @return The string with escaped special characters
 		 * 		according to the JSON specification
 		 */
-		private function escapeString( str:String ):String
-		{
+		private function escapeString( str:String ):String {
 			// create a string to store the string's jsonstring value
 			var s:String = "";
 			// current character in the string we're processing
@@ -123,49 +155,48 @@ package com.adobe.serialization.json
 			var len:Number = str.length;
 			
 			// loop over all of the characters in the string
-			for ( var i:int = 0; i < len; i++ )
-			{
+			for ( var i:int = 0; i < len; i++ ) {
+			
 				// examine the character to determine if we have to escape it
 				ch = str.charAt( i );
-				switch ( ch )
-				{
-					case '"': // quotation mark
+				switch ( ch ) {
+				
+					case '"':	// quotation mark
 						s += "\\\"";
 						break;
-					
+						
 					//case '/':	// solidus
 					//	s += "\\/";
 					//	break;
-					
-					case '\\': // reverse solidus
+						
+					case '\\':	// reverse solidus
 						s += "\\\\";
 						break;
-					
-					case '\b': // bell
+						
+					case '\b':	// bell
 						s += "\\b";
 						break;
-					
-					case '\f': // form feed
+						
+					case '\f':	// form feed
 						s += "\\f";
 						break;
-					
-					case '\n': // newline
+						
+					case '\n':	// newline
 						s += "\\n";
 						break;
-					
-					case '\r': // carriage return
+						
+					case '\r':	// carriage return
 						s += "\\r";
 						break;
-					
-					case '\t': // horizontal tab
+						
+					case '\t':	// horizontal tab
 						s += "\\t";
 						break;
-					
-					default: // everything else
+						
+					default:	// everything else
 						
 						// check for a control character and escape as unicode
-						if ( ch < ' ' )
-						{
+						if ( ch < ' ' ) {
 							// get the hex digit(s) of the character (either 1 or 2 digits)
 							var hexCode:String = ch.charCodeAt( 0 ).toString( 16 );
 							
@@ -175,18 +206,16 @@ package com.adobe.serialization.json
 							
 							// create the unicode escape sequence with 4 hex digits
 							s += "\\u" + zeroPad + hexCode;
-						}
-						else
-						{
-							
+						} else {
+						
 							// no need to do any special encoding, just pass-through
 							s += ch;
 							
 						}
-				} // end switch
+				}	// end switch
 				
-			} // end for loop
-			
+			}	// end for loop
+						
 			return "\"" + s + "\"";
 		}
 		
@@ -196,26 +225,25 @@ package com.adobe.serialization.json
 		 * @param a The array to convert
 		 * @return The JSON string representation of <code>a</code>
 		 */
-		private function arrayToString( a:Array ):String
-		{
+		private function arrayToString( a:Array ):String {
 			// create a string to store the array's jsonstring value
 			var s:String = "";
 			
 			// loop over the elements in the array and add their converted
 			// values to the string
-			var length:int = a.length;
-			for ( var i:int = 0; i < length; i++ )
-			{
+			for ( var i:int = 0; i < a.length; i++ ) {
 				// when the length is 0 we're adding the first element so
 				// no comma is necessary
-				if ( s.length > 0 )
-				{
+				if ( s.length > 0 ) {
 					// we've already added an element, so add the comma separator
 					s += ","
+					if (pretty) {
+						s += " "
+					}
 				}
 				
 				// convert the value to a string
-				s += convertToString( a[ i ] );
+				s += convertToString( a[i] );	
 			}
 			
 			// KNOWN ISSUE:  In ActionScript, Arrays can also be associative
@@ -233,9 +261,40 @@ package com.adobe.serialization.json
 			// A possible solution is to instead encode the Array as an Object
 			// but then it won't get decoded correctly (and won't be an
 			// Array instance)
-			
+						
 			// close the array and return it's string value
 			return "[" + s + "]";
+		}
+		
+		/**
+		 * Converts an array to it's JSON string equivalent using multiple lines
+		 *
+		 * @param a The array to convert
+		 * @return The JSON string representation of <code>a</code>
+		 */
+		private function arrayToStringPretty( a:Array ):String {
+			level++;
+			
+			// create a string to store the array's jsonstring value
+			var s:String = "";
+			
+			// loop over the elements in the array and add their converted
+			// values to the string
+			for ( var i:int = 0; i < a.length; i++ ) {
+				// when the length is 0 we're adding the first element so
+				// no comma is necessary
+				if ( s.length > 0 ) {
+					// we've already added an element, so add the comma separator
+					s += ",\n"
+				}
+				
+				// convert the value to a string
+				s += getPadding(level) + convertToString( a[i] );	
+			}
+			
+			// close the array and return it's string value
+			level--;
+			return "[" + "\n" + s + "\n" + getPadding(level) + "]";
 		}
 		
 		/**
@@ -263,7 +322,7 @@ package com.adobe.serialization.json
 				for ( var key:String in o )
 				{
 					// assign value to a variable for quick lookup
-					value = o[ key ];
+					value = o[key];
 					
 					// don't add function's to the JSON string
 					if ( value is Function )
@@ -274,50 +333,135 @@ package com.adobe.serialization.json
 					
 					// when the length is 0 we're adding the first item so
 					// no comma is necessary
-					if ( s.length > 0 )
-					{
+					if ( s.length > 0 ) {
 						// we've already added an item, so add the comma separator
 						s += ","
+						if (pretty) {
+							s += " "
+						}
 					}
 					
-					s += escapeString( key ) + ":" + convertToString( value );
+					s += escapeString( key ) + ":" 
+					if (pretty) {
+						s += " "
+					}
+					s += convertToString( value );
 				}
 			}
 			else // o is a class instance
 			{
 				// Loop over all of the variables and accessors in the class and 
 				// serialize them along with their values.
-				for each ( var v:XML in classInfo..*.(
-					name() == "variable"
-					||
-					(
-						name() == "accessor"
-						// Issue #116 - Make sure accessors are readable
-						&& attribute( "access" ).charAt( 0 ) == "r" )
-					) )
+				for each ( var v:XML in classInfo..*.( name() == "variable" || name() == "accessor" ) )
 				{
-					// Issue #110 - If [Transient] metadata exists, then we should skip
-					if ( v.metadata && v.metadata.( @name == "Transient" ).length() > 0 )
-					{
-						continue;
-					}
-					
 					// When the length is 0 we're adding the first item so
 					// no comma is necessary
-					if ( s.length > 0 )
-					{
+					if ( s.length > 0 ) {
 						// We've already added an item, so add the comma separator
 						s += ","
+						if (pretty) {
+							s += " "
+						}
 					}
 					
 					s += escapeString( v.@name.toString() ) + ":"
-						+ convertToString( o[ v.@name ] );
+					if (pretty) {
+						s += " "
+					}
+					s += convertToString( o[ v.@name ] );
 				}
+				
 			}
 			
 			return "{" + s + "}";
 		}
-	
-	}
+		
+		/**
+		 * Converts an object to it's JSON string equivalent with multiple lines
+		 *
+		 * @param o The object to convert
+		 * @return The JSON string representation of <code>o</code>
+		 */
+		private function objectToStringPretty( o:Object ):String
+		{
+			level++;
+			
+			// create a string to store the object's jsonstring value
+			var s:String = "";
+			
+			// determine if o is a class instance or a plain object
+			var classInfo:XML = describeType( o );
+			if ( classInfo.@name.toString() == "Object" )
+			{
+				// the value of o[key] in the loop below - store this 
+				// as a variable so we don't have to keep looking up o[key]
+				// when testing for valid values to convert
+				var value:Object;
+				
+				// loop over the keys in the object and add their converted
+				// values to the string
+				for ( var key:String in o )
+				{
+					// assign value to a variable for quick lookup
+					value = o[key];
+					
+					// don't add function's to the JSON string
+					if ( value is Function )
+					{
+						// skip this key and try another
+						continue;
+					}
+					
+					// when the length is 0 we're adding the first item so
+					// no comma is necessary
+					if ( s.length > 0 ) {
+						// we've already added an item, so add the comma separator
+						s += ",\n"
+					}
+					
+					s += getPadding(level) + escapeString( key ) + ":" 
+					if (pretty) {
+						s += " "
+					}
+					s += convertToString( value );
+				}
+			}
+			else // o is a class instance
+			{
+				// Loop over all of the variables and accessors in the class and 
+				// serialize them along with their values.
+				for each ( var v:XML in classInfo..*.( name() == "variable" || name() == "accessor" ) )
+				{
+					// When the length is 0 we're adding the first item so
+					// no comma is necessary
+					if ( s.length > 0 ) {
+						// We've already added an item, so add the comma separator
+						s += ",\n"
+					}
+					
+					s += getPadding(level) + escapeString( v.@name.toString() ) + ":"
+					if (pretty) {
+						s += " "
+					}
+					s += convertToString( o[ v.@name ] );
+				}
+				
+			}
+			
+			level--;
+			return "{" + "\n" + s + "\n" + getPadding(level) + "}";
+		}
+				
+		private static function getPadding(level:int):String {
+			var length:int = level * tabWidth;
+			var s:String = "";
+			for (var i:int=1; i<=length; i++) {
+				s += " ";
+			}
+			return s;
+		}
 
+		
+	}
+	
 }

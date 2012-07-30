@@ -1,4 +1,6 @@
 /*
+  Copyright (c) 2009, Lawrence S. Maccherone, Jr.
+  
   Copyright (c) 2008, Adobe Systems Incorporated
   All rights reserved.
 
@@ -32,7 +34,7 @@
 
 package com.adobe.serialization.json
 {
-	
+
 	/**
 	 * This class provides encoding and decoding of the JSON format.
 	 *
@@ -45,7 +47,7 @@ package com.adobe.serialization.json
 	 *		var myObject:Object = JSON.decode( jsonString );
 	 *	</code>
 	 */
-	public final class JSON
+	public class JSON
 	{
 		/**
 		 * Encodes a object into a JSON string.
@@ -56,14 +58,14 @@ package com.adobe.serialization.json
 		 * @playerversion Flash 9.0
 		 * @tiptext
 		 */
-		public static function encode( o:Object ):String
-		{
-			return new JSONEncoder( o ).getString();
+		public static function encode( o:Object, pretty:Boolean=false, maxLength:int=60 ):String
+		{	
+			return new JSONEncoder( o, pretty, maxLength ).getString();
 		}
 		
 		/**
 		 * Decodes a JSON string into a native object.
-		 *
+		 * 
 		 * @param s The JSON string representing the object
 		 * @param strict Flag indicating if the decoder should strictly adhere
 		 * 		to the JSON standard or not.  The default of <code>true</code>
@@ -77,8 +79,8 @@ package com.adobe.serialization.json
 		 * @tiptext
 		 */
 		public static function decode( s:String, strict:Boolean = true ):*
-		{
-			return new JSONDecoder( s, strict ).getValue();
+		{	
+			return new JSONDecoder( s, strict ).getValue();	
 		}
 	
 	}
