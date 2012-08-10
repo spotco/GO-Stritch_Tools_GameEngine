@@ -6,7 +6,7 @@ package  {
 	public class GameObject extends ClickPoint {
 		
 		[Embed(source = "../resc/spikes.png")] public static var OBJ_SPIKE:Class;
-		[Embed(source = "../resc/boost3.png")] public static var OBJ_BOOST:Class;
+		[Embed(source = "../resc/boost3.png")] public static var OBJ_SPEEDUP:Class;
 		[Embed(source = "../resc/checkerfloor.png")] public static var OBJ_GAMEEND:Class;
 		[Embed(source = "../resc/checkpoint1.png")] public static var OBJ_CHECKPOINT:Class;
 		[Embed(source = "../resc/dogcape.png")] public static var OBJ_CAPE:Class;
@@ -14,6 +14,10 @@ package  {
 		[Embed(source = "../resc/goldenbone.png")] public static var OBJ_BONE:Class;
 		[Embed(source = "../resc/jumppads.png")] public static var OBJ_JUMPPAD:Class;
 		[Embed(source = "../resc/water.png")] public static var OBJ_WATER:Class;
+		[Embed(source = "../resc/birds.png")] public static var OBJ_BIRDS:Class;
+		[Embed(source = "../resc/ground_detail.png")] public static var OBJ_GROUND_DETAIL:Class;
+		[Embed(source = "../resc/cavewall.png")] public static var OBJ_CAVEWALL:Class;
+		[Embed(source = "../resc/blocker.png")] public static var OBJ_BLOCKER:Class;
 		
 		var img:DisplayObject;
 		var objtype:String;
@@ -24,9 +28,6 @@ package  {
 			if (type == OBJ_SPIKE) {
 				img = new OBJ_SPIKE as Bitmap;
 				objtype = "spike";
-			} else if (type == OBJ_BOOST) {
-				img = new OBJ_BOOST as Bitmap;
-				objtype = "boost";
 			} else if (type == OBJ_GAMEEND) {
 				img = new OBJ_GAMEEND as Bitmap;
 				objtype = "game_end";
@@ -48,6 +49,21 @@ package  {
 			} else if (type == OBJ_WATER) {
 				img = new OBJ_WATER as Bitmap;
 				objtype = "water";
+			} else if (type == OBJ_SPEEDUP) {
+				img = new OBJ_SPEEDUP as Bitmap;
+				objtype = "speedup";
+			} else if (type == OBJ_BIRDS) {
+				img = new OBJ_BIRDS as Bitmap;
+				objtype = "birdflock";
+			} else if (type == OBJ_GROUND_DETAIL) {
+				img = new OBJ_GROUND_DETAIL as Bitmap;
+				objtype = "ground_detail";
+			} else if (type == OBJ_BLOCKER) {
+				objtype = "blocker";
+				BrowserOut.msg_to_browser("console.log", "placed blocker");
+			} else if (type == OBJ_CAVEWALL) {
+				objtype = "cavewall";
+				BrowserOut.msg_to_browser("console.log", "placed cavewall");
 			} else {
 				objtype = "";
 				TextRenderer.render_text(Main.spr.graphics, "gobj_err:"+type, 50, 50, 10);

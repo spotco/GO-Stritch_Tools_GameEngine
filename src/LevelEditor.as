@@ -14,6 +14,7 @@ package {
 		public var CAN_FALL_THROUGH_LINE:Boolean = true;
 		
 		public var cur_obj_type = GameObject.OBJ_BONE;
+		public var cur_ground_detail_val = 1;
 		public var cur_island_hei = 50;
 		
 		var current_x:Number = 0;
@@ -112,6 +113,15 @@ package {
 					var wid = pts[pts.length-1].x - click_x;
 					newobj = new LineGameObject(click_x, click_y, cur_obj_type, wid, cur_island_hei, String(obj_label_count));
 					BrowserOut.msg_to_browser("console.log", String(wid));
+				
+				} else if (pts[0] && (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL)) {
+					var wid = pts[pts.length - 1].x - click_x;
+					var hei = Common.normal_tofrom_stage_coord(click_y) - pts[pts.length - 1].y;
+					newobj = new AreaGameObject(click_x, click_y, cur_obj_type, wid, hei, String(obj_label_count));
+					
+				} else if (cur_obj_type == GameObject.OBJ_GROUND_DETAIL) {
+					newobj = new GroundDetailGameObject(click_x, click_y, cur_ground_detail_val, String(obj_label_count));
+					
 				} else {
 					newobj = new GameObject(click_x, click_y, cur_obj_type, String(obj_label_count));
 				}
@@ -306,8 +316,9 @@ package {
 		
 		public function get_current_json():String {
 			var jso:Object = { };
+			
 			jso["start_x"] = player_start_pt != null ? player_start_pt.x : 0;
-			jso["start_y"] = player_start_pt != null ? player_start_pt.y : 0;
+			jso["start_y"] = player_start_pt != null ? Common.normal_tofrom_stage_coord(player_start_pt.y) : 0;
 			jso["assert_links"] = 0;
 			
 			jso["islands"] = [];

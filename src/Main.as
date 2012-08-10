@@ -19,7 +19,6 @@ package {
 		}
 		
 		private function init(e:Event = null):void {
-			
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			spr = new LevelEditor;
 			stage.addChild(spr);
@@ -38,6 +37,10 @@ package {
 				ExternalInterface.addCallback("push_island_hei", function(t) {
 					spr.cur_island_hei = Number(t);
 				});
+				ExternalInterface.addCallback("change_ground_detail_val", function(val) {
+					spr.cur_ground_detail_val = Number(val);
+					BrowserOut.msg_to_browser("console.log", "ground_detail_val changed to:" + val);
+				});
 				ExternalInterface.addCallback("change_object_type",function(t) {
 					if (t == "spike") {
 						spr.cur_obj_type = GameObject.OBJ_SPIKE;
@@ -51,12 +54,20 @@ package {
 						spr.cur_obj_type = GameObject.OBJ_ROCKET;
 					} else if (t == "checkpoint") {
 						spr.cur_obj_type = GameObject.OBJ_CHECKPOINT;
-					} else if (t == "boost") {
-						spr.cur_obj_type = GameObject.OBJ_BOOST;
 					} else if (t == "water") {
 						spr.cur_obj_type = GameObject.OBJ_WATER;
 					} else if (t == "game_end") {
 						spr.cur_obj_type = GameObject.OBJ_GAMEEND;
+					} else if (t == "speedup") {
+						spr.cur_obj_type = GameObject.OBJ_SPEEDUP;
+					} else if (t == "birds") {
+						spr.cur_obj_type = GameObject.OBJ_BIRDS;
+					} else if (t == "ground_detail") {
+						spr.cur_obj_type = GameObject.OBJ_GROUND_DETAIL;
+					} else if (t == "cave_wall") {
+						spr.cur_obj_type = GameObject.OBJ_CAVEWALL;
+					} else if (t == "blocker") {
+						spr.cur_obj_type = GameObject.OBJ_BLOCKER;
 					} else {
 						TextRenderer.render_text(Main.spr.graphics, "obj sel error:"+t, 50, 50, 10);
 					}
