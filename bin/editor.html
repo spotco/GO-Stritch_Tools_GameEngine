@@ -135,7 +135,7 @@
 	
 	<div id="grounddetailcontrols">
 		<b>ground detail</b><br/>
-		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(1);" />1
+		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(1);" checked />1
 		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(2);"/>2
 		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(3);"/>3
 		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(4);"/>4
@@ -147,16 +147,16 @@
 		<b>Object</b><br />
 		<input type="button" id="spike" value="spike"  class="objecttype_button" onclick="change_object_type('spike');" /><br />
 		<input type="button" id="jumppad" value="jumppad" class="objecttype_button" onclick="change_object_type('jumppad');" /><br />
-		<input type="button" id="bone" value="bone" class="objecttype_button" onclick="change_object_type('bone');" /><br />
-		<input type="button" id="cape" value="cape" class="objecttype_button" onclick="change_object_type('cape');" /><br />
-		<input type="button" id="rocket" value="rocket" class="objecttype_button" onclick="change_object_type('rocket');" /><br />
+		<input type="button" id="dogbone" value="bone" class="objecttype_button" onclick="change_object_type('dogbone');" /><br />
+		<input type="button" id="dogcape" value="cape" class="objecttype_button" onclick="change_object_type('dogcape');" /><br />
+		<input type="button" id="dogrocket" value="rocket" class="objecttype_button" onclick="change_object_type('dogrocket');" /><br />
 		<input type="button" id="checkpoint" value="checkpoint" class="objecttype_button" onclick="change_object_type('checkpoint');" /><br />
 		<input type="button" id="water" value="water" class="objecttype_button" onclick="change_object_type('water');" /><br />
 		<input type="button" id="game_end" value="game_end" class="objecttype_button" onclick="change_object_type('game_end');" /><br />
 		<input type="button" id="birds" value="birds" class="objecttype_button" onclick="change_object_type('birds');" /><br />
 		<input type="button" id="speedup" value="speedup" class="objecttype_button" onclick="change_object_type('speedup');" /><br />
 		<input type="button" id="ground_detail" value="ground_detail" class="objecttype_button" onclick="change_object_type('ground_detail');" /><br />
-		<input type="button" id="cave_wall" value="cave_wall" class="objecttype_button" onclick="change_object_type('cave_wall');" /><br />
+		<input type="button" id="cavewall" value="cave_wall" class="objecttype_button" onclick="change_object_type('cavewall');" /><br />
 		<input type="button" id="blocker" value="blocker" class="objecttype_button" onclick="change_object_type('blocker');" /><br />
 	</div>
 	
@@ -170,8 +170,7 @@
 
 	<br />
 	<textarea id="msgout" style="width:100%;height:200px;">
-GOGODoggy Level Editor v1.1
-TODO:assert links calculation
+GOGODoggy Level Editor v1.2
 	
 Controls:
 Click to place points/lines

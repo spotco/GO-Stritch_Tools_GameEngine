@@ -26,7 +26,13 @@ package {
 			Security.allowDomain("*");
 			try {
 				ExternalInterface.addCallback("json_in", spr.json_in);
-				ExternalInterface.addCallback("json_out", spr.json_out);
+				ExternalInterface.addCallback("json_out", function() {
+					try {
+						spr.json_out();
+					} catch (e:Error) {
+						BrowserOut.msg_to_browser("console.log", e.message);
+					}
+				});
 				ExternalInterface.addCallback("undo", spr.undo);
 				ExternalInterface.addCallback("change_ndir", spr.change_ndir);
 				ExternalInterface.addCallback("toggle_line_labels", spr.toggle_line_labels);
@@ -41,35 +47,12 @@ package {
 					spr.cur_ground_detail_val = Number(val);
 					BrowserOut.msg_to_browser("console.log", "ground_detail_val changed to:" + val);
 				});
-				ExternalInterface.addCallback("change_object_type",function(t) {
-					if (t == "spike") {
-						spr.cur_obj_type = GameObject.OBJ_SPIKE;
-					} else if (t == "jumppad") {
-						spr.cur_obj_type = GameObject.OBJ_JUMPPAD;
-					} else if (t == "bone") {
-						spr.cur_obj_type = GameObject.OBJ_BONE;
-					} else if (t == "cape") {
-						spr.cur_obj_type = GameObject.OBJ_CAPE;
-					} else if (t == "rocket") {
-						spr.cur_obj_type = GameObject.OBJ_ROCKET;
-					} else if (t == "checkpoint") {
-						spr.cur_obj_type = GameObject.OBJ_CHECKPOINT;
-					} else if (t == "water") {
-						spr.cur_obj_type = GameObject.OBJ_WATER;
-					} else if (t == "game_end") {
-						spr.cur_obj_type = GameObject.OBJ_GAMEEND;
-					} else if (t == "speedup") {
-						spr.cur_obj_type = GameObject.OBJ_SPEEDUP;
-					} else if (t == "birds") {
-						spr.cur_obj_type = GameObject.OBJ_BIRDS;
-					} else if (t == "ground_detail") {
-						spr.cur_obj_type = GameObject.OBJ_GROUND_DETAIL;
-					} else if (t == "cave_wall") {
-						spr.cur_obj_type = GameObject.OBJ_CAVEWALL;
-					} else if (t == "blocker") {
-						spr.cur_obj_type = GameObject.OBJ_BLOCKER;
-					} else {
+				ExternalInterface.addCallback("change_object_type", function(t) {
+					t = Common.string_to_gameobjectclass(t);
+					if (t == null) {
 						TextRenderer.render_text(Main.spr.graphics, "obj sel error:"+t, 50, 50, 10);
+					} else {
+						spr.cur_obj_type = t;
 					}
 				});
 			} catch (e:Error) {

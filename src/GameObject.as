@@ -60,10 +60,8 @@ package  {
 				objtype = "ground_detail";
 			} else if (type == OBJ_BLOCKER) {
 				objtype = "blocker";
-				BrowserOut.msg_to_browser("console.log", "placed blocker");
 			} else if (type == OBJ_CAVEWALL) {
 				objtype = "cavewall";
-				BrowserOut.msg_to_browser("console.log", "placed cavewall");
 			} else {
 				objtype = "";
 				TextRenderer.render_text(Main.spr.graphics, "gobj_err:"+type, 50, 50, 10);

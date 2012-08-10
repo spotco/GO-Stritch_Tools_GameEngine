@@ -15,6 +15,39 @@ package  {
 			return vec.filter(function(o) { return o != tar; });
 		}
 		
+		
+		public static function string_to_gameobjectclass(t:String):Class {
+			if (t == "spike") {
+				return GameObject.OBJ_SPIKE;
+			} else if (t == "jumppad") {
+				return GameObject.OBJ_JUMPPAD;
+			} else if (t == "dogbone") {
+				return GameObject.OBJ_BONE;
+			} else if (t == "dogcape") {
+				return GameObject.OBJ_CAPE;
+			} else if (t == "dogrocket") {
+				return GameObject.OBJ_ROCKET;
+			} else if (t == "checkpoint") {
+				return GameObject.OBJ_CHECKPOINT;
+			} else if (t == "water") {
+				return GameObject.OBJ_WATER;
+			} else if (t == "game_end") {
+				return GameObject.OBJ_GAMEEND;
+			} else if (t == "speedup") {
+				return GameObject.OBJ_SPEEDUP;
+			} else if (t == "birds") {
+				return GameObject.OBJ_BIRDS;
+			} else if (t == "ground_detail") {
+				return GameObject.OBJ_GROUND_DETAIL;
+			} else if (t == "cavewall") {
+				return GameObject.OBJ_CAVEWALL;
+			} else if (t == "blocker") {
+				return GameObject.OBJ_BLOCKER;
+			} else {
+				return null;
+			}
+		}
+		
 	}
 
 }

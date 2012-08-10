@@ -55,6 +55,7 @@ package {
 		}
 		
 		private function draw_grid() {
+			this.graphics.clear();
 			grid_draw.graphics.clear();
 			
 			var ct = 0;
@@ -109,18 +110,25 @@ package {
 				
 				
 				var newobj:GameObject;
-				if (cur_obj_type == GameObject.OBJ_WATER && pts[0]) {
+				/*if (cur_obj_type == GameObject.OBJ_WATER && pts[0]) {
 					var wid = pts[pts.length-1].x - click_x;
 					newobj = new LineGameObject(click_x, click_y, cur_obj_type, wid, cur_island_hei, String(obj_label_count));
 					BrowserOut.msg_to_browser("console.log", String(wid));
 				
-				} else if (pts[0] && (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL)) {
+				} else*/ 
+				if (pts[0] && (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER)) {
 					var wid = pts[pts.length - 1].x - click_x;
 					var hei = Common.normal_tofrom_stage_coord(click_y) - pts[pts.length - 1].y;
+					
+					if (wid < 0 || hei < 0) {
+						BrowserOut.msg_to_browser("console.log", "wid/hei cannot be less than 0");
+						return;
+					}
+					
 					newobj = new AreaGameObject(click_x, click_y, cur_obj_type, wid, hei, String(obj_label_count));
 					
 				} else if (cur_obj_type == GameObject.OBJ_GROUND_DETAIL) {
-					newobj = new GroundDetailGameObject(click_x, click_y, cur_ground_detail_val, String(obj_label_count));
+					newobj = new GroundDetailGameObject(click_x, click_y, cur_ground_detail_val, printf("(%s)gd_img:%1.0f", String(obj_label_count), cur_ground_detail_val));
 					
 				} else {
 					newobj = new GameObject(click_x, click_y, cur_obj_type, String(obj_label_count));
@@ -235,7 +243,6 @@ package {
 			BrowserOut.msg_to_browser("msg_out", get_current_json());
 		}
 		
-		//json_in('{"start_x":"0","start_y":"0","assert_links":"0","islands":[{"type":"line","x1":"107","y1":"357","x2":"296","y2":"202"},{"type":"line","x1":"296","y1":"202","x2":"557","y2":"299"}],}');
 		public function json_in(json:String) {
 			this.draw_grid();
 			var json_o:Object;
@@ -277,17 +284,34 @@ package {
 					pts.push(pt2);
 				}
 				
-				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y, i.ndir, i.label, 50, i.can_fall == "true");
+				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y, i.ndir, i.label, Number(i.hei), Boolean(i.can_fall));
 				lines.push(nline);
 				addChild(nline);
 				BrowserOut.msg_to_browser("console.log", printf("PT1(%f,%f) -> PT2(%f,%f)",pt1.normal_x,pt1.normal_y,pt2.normal_x,pt2.normal_y));
 			}
 			
-			for each(var o:Object in json_o.objects) {
+			for each(var o:Object in json_o.objects) {				
+				var nobj:ClickPoint;
 				var x:Number = Number(o.x);
 				var y:Number = Number(o.y);
 				var label:String = o.label || "";
-				var nobj:ClickPoint = new ClickPoint(x, y, 0x00FFFF, label);
+				var type_class:Class = Common.string_to_gameobjectclass(o.type);
+				
+				BrowserOut.msg_to_browser("console.log", o.type);
+				
+				if (type_class == GameObject.OBJ_WATER || type_class == GameObject.OBJ_BLOCKER || type_class == GameObject.OBJ_CAVEWALL) {
+					nobj = new AreaGameObject(x, y, type_class, Number(o.width), Number(o.height), label);
+				} else if (type_class != null) {
+					if (type_class == GameObject.OBJ_GROUND_DETAIL) {
+						nobj = new GroundDetailGameObject(x, y, Number(o.img), label);
+					} else {
+						nobj = new GameObject(x, y, type_class, label);
+					}
+				} else {
+					nobj = new ClickPoint(x, y, 0x00FFFF, label);
+					BrowserOut.msg_to_browser("console.log", "ERROR, UNRECOGNIZED OBJ_TYPE");
+				}
+				
 				objects.push(nobj);
 				addChild(nobj);
 				BrowserOut.msg_to_browser("console.log", printf("Object label(%s) at(%f,%f)", nobj.label,nobj.normal_x, nobj.normal_y));
@@ -318,7 +342,6 @@ package {
 			var ct:int = 0;
 			for (var i = 0; i < lines.length; i++) {
 				var l:LineIsland = lines[i];
-				
 				for (var j = 0; j < lines.length; j++) {
 					var l2:LineIsland = lines[j];
 					if (Common.pt_fuzzy_eq(l.x2, l.y2, l2.x1, l2.y1)) {
@@ -347,7 +370,7 @@ package {
 				jso["objects"].push(objects[i].get_jsonobject());
 			}
 			
-			return JSON.encode(jso, true,120);
+			return JSON.encode(jso, true,140);
 		}
 		
 		public function undo() {
