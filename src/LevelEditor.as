@@ -314,12 +314,28 @@ package {
 			return a.filter(function(o) { removeChild(o); return false; } );
 		}
 		
+		private function calc_links():int {
+			var ct:int = 0;
+			for (var i = 0; i < lines.length; i++) {
+				var l:LineIsland = lines[i];
+				
+				for (var j = 0; j < lines.length; j++) {
+					var l2:LineIsland = lines[j];
+					if (Common.pt_fuzzy_eq(l.x2, l.y2, l2.x1, l2.y1)) {
+						ct++;
+						break;
+					}
+				}
+			}
+			return ct;
+		}
+		
 		public function get_current_json():String {
 			var jso:Object = { };
 			
 			jso["start_x"] = player_start_pt != null ? player_start_pt.x : 0;
 			jso["start_y"] = player_start_pt != null ? Common.normal_tofrom_stage_coord(player_start_pt.y) : 0;
-			jso["assert_links"] = 0;
+			jso["assert_links"] = calc_links();
 			
 			jso["islands"] = [];
 			for (var i = 0; i < lines.length; i++) {
