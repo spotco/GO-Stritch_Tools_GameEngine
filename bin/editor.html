@@ -12,21 +12,21 @@
 			position:absolute;
 			right:0%;
 			top:0%;
-			height:170px;
+			height:200px;
 			background:#AAAAAA;
 			border:3px dashed grey;
 		}
 		#ndircontrols {
 			position:absolute;
 			right:0%;
-			top:190px;
+			top:210px;
 			background:#AAAAAA;
 			border:3px dashed grey;
 		}
 		#grounddetailcontrols {
 			position:absolute;
 			right:0%;
-			top:300px;
+			top:350px;
 			width:12%;
 			background:#AAAAAA;
 			border:3px dashed grey;
@@ -103,6 +103,15 @@
 				alert("nonnumeric value");
 			}
 		}
+		function shift_all() {
+			var val = document.getElementById("shift_entry").value;
+			if (parseInt(val)) {
+				val = parseInt(val);
+				document.getElementById("GOstrichLevelEditor2").shift_all(val);
+			} else {
+				alert("nonnumeric value");
+			}
+		}
 		function change_ground_detail_val(val) {
 			document.getElementById("GOstrichLevelEditor2").change_ground_detail_val(val);
 		}
@@ -123,6 +132,9 @@
 		<br />
 		<input type="text" id="isl_hei" value="50" size=5 />
 		<input type="button" value="isl_hei" id="island_hei_submit" onclick="push_island_hei()" />
+		<br />
+		<input type="text" id="shift_entry" value="50" size=5 />
+		<input type="button" value="shift_all_x" id="shift_submit" onclick="shift_all()" />
 	</div>
 		
 	<div id="ndircontrols">
@@ -153,7 +165,7 @@
 		<input type="button" id="checkpoint" value="checkpoint" class="objecttype_button" onclick="change_object_type('checkpoint');" /><br />
 		<input type="button" id="water" value="water" class="objecttype_button" onclick="change_object_type('water');" /><br />
 		<input type="button" id="game_end" value="game_end" class="objecttype_button" onclick="change_object_type('game_end');" /><br />
-		<input type="button" id="birds" value="birds" class="objecttype_button" onclick="change_object_type('birds');" /><br />
+		<input type="button" id="birdflock" value="birds" class="objecttype_button" onclick="change_object_type('birdflock');" /><br />
 		<input type="button" id="speedup" value="speedup" class="objecttype_button" onclick="change_object_type('speedup');" /><br />
 		<input type="button" id="ground_detail" value="ground_detail" class="objecttype_button" onclick="change_object_type('ground_detail');" /><br />
 		<input type="button" id="cavewall" value="cave_wall" class="objecttype_button" onclick="change_object_type('cavewall');" /><br />

@@ -24,6 +24,7 @@ package {
 		var lines:Array = new Array;
 		var objects:Array = new Array;
 		var undo_stack:Array = new Array;
+		var bids_list:Array;
 		var line_ndir_mode:String = LineIsland.NDIR_LEFT;
 		
 		var player_start_pt:ClickPoint = null;
@@ -47,7 +48,29 @@ package {
 			draw_grid();
 			add_controls();
 			set_scroll_rect();
+			reset_bid();
 			BrowserOut.msg_to_browser("toggle_ndir", line_ndir_mode);
+		}
+		
+		private function reset_bid() {
+			bids_list = [];
+			objects.forEach(function(i) {
+				if (i.objtype == "dogbone") {
+					bids_list.push((i as DogBoneGameObject).bid);
+				}
+			});
+		}
+		
+		private function get_new_bid():Number {
+			var max_bid:Number = 0;
+			bids_list.forEach(function(i) {
+				if (max_bid < i) {
+					max_bid = i;
+				}
+			});
+			max_bid++;
+			bids_list.push(max_bid);
+			return max_bid;
 		}
 		
 		private function set_scroll_rect() {
@@ -110,12 +133,6 @@ package {
 				
 				
 				var newobj:GameObject;
-				/*if (cur_obj_type == GameObject.OBJ_WATER && pts[0]) {
-					var wid = pts[pts.length-1].x - click_x;
-					newobj = new LineGameObject(click_x, click_y, cur_obj_type, wid, cur_island_hei, String(obj_label_count));
-					BrowserOut.msg_to_browser("console.log", String(wid));
-				
-				} else*/ 
 				if (pts[0] && (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER)) {
 					var wid = pts[pts.length - 1].x - click_x;
 					var hei = Common.normal_tofrom_stage_coord(click_y) - pts[pts.length - 1].y;
@@ -129,7 +146,8 @@ package {
 					
 				} else if (cur_obj_type == GameObject.OBJ_GROUND_DETAIL) {
 					newobj = new GroundDetailGameObject(click_x, click_y, cur_ground_detail_val, printf("(%s)gd_img:%1.0f", String(obj_label_count), cur_ground_detail_val));
-					
+				} else if (cur_obj_type == GameObject.OBJ_BONE) {
+					newobj = new DogBoneGameObject(click_x, click_y, get_new_bid());
 				} else {
 					newobj = new GameObject(click_x, click_y, cur_obj_type, String(obj_label_count));
 				}
@@ -290,6 +308,8 @@ package {
 				BrowserOut.msg_to_browser("console.log", printf("PT1(%f,%f) -> PT2(%f,%f)",pt1.normal_x,pt1.normal_y,pt2.normal_x,pt2.normal_y));
 			}
 			
+			
+			
 			for each(var o:Object in json_o.objects) {				
 				var nobj:ClickPoint;
 				var x:Number = Number(o.x);
@@ -301,6 +321,8 @@ package {
 				
 				if (type_class == GameObject.OBJ_WATER || type_class == GameObject.OBJ_BLOCKER || type_class == GameObject.OBJ_CAVEWALL) {
 					nobj = new AreaGameObject(x, y, type_class, Number(o.width), Number(o.height), label);
+				} else if (type_class == GameObject.OBJ_BONE) {
+					nobj = new DogBoneGameObject(x, y, Number(o.bid));
 				} else if (type_class != null) {
 					if (type_class == GameObject.OBJ_GROUND_DETAIL) {
 						nobj = new GroundDetailGameObject(x, y, Number(o.img), label);
@@ -331,6 +353,7 @@ package {
 			this.player_start_pt = playerstart;
 			addChild(playerstart);
 			
+			reset_bid();
 			BrowserOut.msg_to_browser("console.log", "Successfully parsed json.");
 		}
 		
@@ -351,6 +374,25 @@ package {
 				}
 			}
 			return ct;
+		}
+		
+		public function shift_all(n:Number) {
+			var o:Array = [pts, lines, objects];
+			o.forEach(function(a) {
+				a.forEach(function(i) {
+					if (i is ClickPoint) {
+						(i as ClickPoint).normal_x += n;
+						i.x += n;
+					} else if (i is LineIsland) {
+						(i as LineIsland).x1 += n;
+						(i as LineIsland).x2 += n;
+						i.x += n;
+					} else {
+						BrowserOut.msg_to_browser("console.log", "shifting error");
+					}
+				});
+			});
+			
 		}
 		
 		public function get_current_json():String {
@@ -387,11 +429,11 @@ package {
 		
 		
 		private function move(e:KeyboardEvent) {
-			var mov_val:Number = 5;
+			var mov_val:Number = 40;
 			if (e.ctrlKey) {
-				mov_val *= 3;
+				mov_val = 100;
 			} else if (e.shiftKey) {
-				mov_val *= 11;
+				mov_val = 200;
 			}
 			
 			if (e.keyCode == Keyboard.UP) {

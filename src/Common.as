@@ -35,7 +35,7 @@ package  {
 				return GameObject.OBJ_GAMEEND;
 			} else if (t == "speedup") {
 				return GameObject.OBJ_SPEEDUP;
-			} else if (t == "birds") {
+			} else if (t == "birdflock") {
 				return GameObject.OBJ_BIRDS;
 			} else if (t == "ground_detail") {
 				return GameObject.OBJ_GROUND_DETAIL;

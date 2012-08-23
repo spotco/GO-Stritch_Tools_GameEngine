@@ -25,7 +25,13 @@ package {
 			
 			Security.allowDomain("*");
 			try {
-				ExternalInterface.addCallback("json_in", spr.json_in);
+				ExternalInterface.addCallback("json_in", function(t) {
+					try {
+						spr.json_in(t as String);
+					} catch (e:Error) {
+						BrowserOut.msg_to_browser("console.log", e.name + " " + e.message);
+					}
+				});
 				ExternalInterface.addCallback("json_out", function() {
 					try {
 						spr.json_out();
@@ -55,9 +61,15 @@ package {
 						spr.cur_obj_type = t;
 					}
 				});
+				ExternalInterface.addCallback("shift_all", function(t) {
+					spr.shift_all(t);
+				});
 			} catch (e:Error) {
 				TextRenderer.render_text(Main.spr.graphics, e.message, 50, 50, 10);
 			}
+			
+			var a:String = '{"assert_links": 0,"islands": [{"x2": 370, "can_fall": true, "y2": 472, "ndir": "left", "label": "", "type": "line", "x1": 99, "y1": 191, "hei": 50}],"objects": [],"start_x": 0,"start_y": 0}';
+			
 		}
 		
 	}

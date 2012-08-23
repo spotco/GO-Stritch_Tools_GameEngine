@@ -20,7 +20,7 @@ package  {
 		[Embed(source = "../resc/blocker.png")] public static var OBJ_BLOCKER:Class;
 		
 		var img:DisplayObject;
-		var objtype:String;
+		public var objtype:String;
 		
 		public function GameObject(x:Number,y:Number,type:Class,label:String = "") {
 			super(x, y, 0x00FFFF, label);
