@@ -1,5 +1,6 @@
 package  {
 	import flash.geom.Point;
+	import editorobj.*;
 
 	public class Common {
 		
@@ -43,9 +44,17 @@ package  {
 				return GameObject.OBJ_CAVEWALL;
 			} else if (t == "blocker") {
 				return GameObject.OBJ_BLOCKER;
+			} else if (t == "camera_area") {
+				return GameObject.OBJ_CAMERA_AREA;
 			} else {
+				BrowserOut.msg_to_browser("console.log", "error in str_to_gameobj in common");
 				return null;
 			}
+		}
+		
+		public static function roundDecimal(num:Number, precision:int):Number{
+			var decimal:Number = Math.pow(10, precision);
+			return Math.round(decimal* num) / decimal;
 		}
 		
 	}

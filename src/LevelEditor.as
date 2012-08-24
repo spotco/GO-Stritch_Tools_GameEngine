@@ -5,7 +5,9 @@ package {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.geom.Vector3D;
 	import flash.ui.Keyboard;
+	import editorobj.*;
 	import com.adobe.serialization.json.*;
 
 	public class LevelEditor extends Sprite {
@@ -26,12 +28,14 @@ package {
 		var undo_stack:Array = new Array;
 		var bids_list:Array;
 		var line_ndir_mode:String = LineIsland.NDIR_LEFT;
+		var line_ground_mode:String = LineIsland.GROUND_TYPE_OPEN;
 		
 		var player_start_pt:ClickPoint = null;
 		public var obj_label_count:Number = 0;
 		public var line_label_count:Number = 0;
 		public var cur_sel_pt:ClickPoint = null;
 		public var lastkey:uint = 0x000000;
+		var camerastate = { x:140, y:80, z:50 };
 		
 		
 		private var grid_draw:Sprite;
@@ -133,7 +137,10 @@ package {
 				
 				
 				var newobj:GameObject;
-				if (pts[0] && (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER)) {
+				if (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER || cur_obj_type == GameObject.OBJ_CAMERA_AREA) {
+					if (!pts[0]) {
+						return;
+					}
 					var wid = pts[pts.length - 1].x - click_x;
 					var hei = Common.normal_tofrom_stage_coord(click_y) - pts[pts.length - 1].y;
 					
@@ -142,12 +149,27 @@ package {
 						return;
 					}
 					
-					newobj = new AreaGameObject(click_x, click_y, cur_obj_type, wid, hei, String(obj_label_count));
-					
+					if (cur_obj_type == GameObject.OBJ_CAMERA_AREA) {
+						newobj = new CameraAreaGameObject(click_x, click_y, cur_obj_type, wid, hei, camerastate);
+					} else {
+						newobj = new AreaGameObject(click_x, click_y, cur_obj_type, wid, hei, String(obj_label_count));
+					}
 				} else if (cur_obj_type == GameObject.OBJ_GROUND_DETAIL) {
 					newobj = new GroundDetailGameObject(click_x, click_y, cur_ground_detail_val, printf("(%s)gd_img:%1.0f", String(obj_label_count), cur_ground_detail_val));
+				
 				} else if (cur_obj_type == GameObject.OBJ_BONE) {
 					newobj = new DogBoneGameObject(click_x, click_y, get_new_bid());
+					
+				} else if (cur_obj_type == GameObject.OBJ_JUMPPAD || cur_obj_type == GameObject.OBJ_SPEEDUP) {
+					if (!pts[0]) {
+						return;
+					}
+					var wid = pts[pts.length - 1].x - click_x;
+					var hei = Common.normal_tofrom_stage_coord(click_y) - pts[pts.length - 1].y;
+					var dir = new Vector3D(wid, hei, 0);
+					dir.normalize();
+					newobj = new DirectionalGameObject(click_x, click_y, cur_obj_type, {x:Common.roundDecimal(dir.x, 2),y:Common.roundDecimal(dir.y, 2)}, String(obj_label_count));
+					
 				} else {
 					newobj = new GameObject(click_x, click_y, cur_obj_type, String(obj_label_count));
 				}
@@ -177,12 +199,13 @@ package {
 				
 				if (cur_sel_pt != null) {
 					var nline:LineIsland;
+					
+					var label:String = "";
 					if (LINE_LABELS_ON) {
-						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode, String(line_label_count),cur_island_hei,CAN_FALL_THROUGH_LINE);
-						line_label_count++;
-					} else {
-						nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ndir_mode,"",cur_island_hei,CAN_FALL_THROUGH_LINE);
+						label = String(line_label_count);
 					}
+					nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ground_mode, line_ndir_mode, label, cur_island_hei, CAN_FALL_THROUGH_LINE);
+					
 					lines.push(nline);
 					addChild(nline);
 					BrowserOut.msg_to_browser("console.log", printf("Added line from (%f,%f) to (%f,%f)", cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y));
@@ -302,7 +325,11 @@ package {
 					pts.push(pt2);
 				}
 				
-				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y, i.ndir, i.label, Number(i.hei), Boolean(i.can_fall));
+				var ground_type:String = LineIsland.GROUND_TYPE_OPEN;
+				if (i.ground_type) {
+					ground_type = i.ground_type;
+				}
+				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y,ground_type, i.ndir, i.label, Number(i.hei), Boolean(i.can_fall));
 				lines.push(nline);
 				addChild(nline);
 				BrowserOut.msg_to_browser("console.log", printf("PT1(%f,%f) -> PT2(%f,%f)",pt1.normal_x,pt1.normal_y,pt2.normal_x,pt2.normal_y));
@@ -319,10 +346,15 @@ package {
 				
 				BrowserOut.msg_to_browser("console.log", o.type);
 				
-				if (type_class == GameObject.OBJ_WATER || type_class == GameObject.OBJ_BLOCKER || type_class == GameObject.OBJ_CAVEWALL) {
+				if (type_class == GameObject.OBJ_CAMERA_AREA) {
+					nobj = new CameraAreaGameObject(x, y, type_class, Number(o.width), Number(o.height), o.camera);
+				} else if (type_class == GameObject.OBJ_WATER || type_class == GameObject.OBJ_BLOCKER || type_class == GameObject.OBJ_CAVEWALL) {
 					nobj = new AreaGameObject(x, y, type_class, Number(o.width), Number(o.height), label);
 				} else if (type_class == GameObject.OBJ_BONE) {
 					nobj = new DogBoneGameObject(x, y, Number(o.bid));
+				} else if (type_class == GameObject.OBJ_JUMPPAD || type_class == GameObject.OBJ_SPEEDUP) {
+					nobj = new DirectionalGameObject(x, y, type_class, o.dir, label);
+					
 				} else if (type_class != null) {
 					if (type_class == GameObject.OBJ_GROUND_DETAIL) {
 						nobj = new GroundDetailGameObject(x, y, Number(o.img), label);
@@ -376,17 +408,24 @@ package {
 			return ct;
 		}
 		
-		public function shift_all(n:Number) {
+		public function shift_all(n) {
 			var o:Array = [pts, lines, objects];
 			o.forEach(function(a) {
 				a.forEach(function(i) {
 					if (i is ClickPoint) {
-						(i as ClickPoint).normal_x += n;
-						i.x += n;
+						(i as ClickPoint).normal_x += n.x;
+						i.x += n.x;
+						
+						(i as ClickPoint).normal_y += n.y;
+						i.y -= n.y;
 					} else if (i is LineIsland) {
-						(i as LineIsland).x1 += n;
-						(i as LineIsland).x2 += n;
-						i.x += n;
+						(i as LineIsland).x1 += n.x;
+						(i as LineIsland).x2 += n.x;
+						i.x += n.x;
+						
+						(i as LineIsland).y1 += n.y;
+						(i as LineIsland).y2 += n.y;
+						i.y -= n.y;
 					} else {
 						BrowserOut.msg_to_browser("console.log", "shifting error");
 					}
@@ -412,7 +451,7 @@ package {
 				jso["objects"].push(objects[i].get_jsonobject());
 			}
 			
-			return JSON.encode(jso, true,140);
+			return JSON.encode(jso, true,160);
 		}
 		
 		public function undo() {
@@ -451,6 +490,16 @@ package {
 			
 			draw_grid();
 			set_scroll_rect();
+		}
+		
+		public function change_camerastate(pos) {
+			camerastate.x = Number(pos.x);
+			camerastate.y = Number(pos.y);
+			camerastate.z = Number(pos.z);
+		}
+		
+		public function change_ground_mode(mode) {
+			line_ground_mode = mode;
 		}
 		
 	}

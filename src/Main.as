@@ -3,6 +3,7 @@ package {
 	import flash.events.Event;
 	import flash.external.ExternalInterface;
 	import flash.system.Security;
+	import editorobj.*;
 	
 	[SWF(backgroundColor = "#000000", frameRate = "60", width = "1000", height = "650")]
 
@@ -64,12 +65,27 @@ package {
 				ExternalInterface.addCallback("shift_all", function(t) {
 					spr.shift_all(t);
 				});
+				ExternalInterface.addCallback("change_zoom", function(t) {
+					spr.change_camerastate(t);
+				});
+				ExternalInterface.addCallback("change_ground_type_val", function(t) {
+					if (t == "open") {
+						spr.change_ground_mode(LineIsland.GROUND_TYPE_OPEN);
+					} else if (t == "cave") {
+						spr.change_ground_mode(LineIsland.GROUND_TYPE_CAVE);
+					} else if (t == "cloud") {
+						BrowserOut.msg_to_browser("console.log", "invalid ground type");
+					} else {
+						BrowserOut.msg_to_browser("console.log", "invalid ground type");
+					}
+				});
 			} catch (e:Error) {
 				TextRenderer.render_text(Main.spr.graphics, e.message, 50, 50, 10);
 			}
 			
 			var a:String = '{"assert_links": 0,"islands": [{"x2": 370, "can_fall": true, "y2": 472, "ndir": "left", "label": "", "type": "line", "x1": 99, "y1": 191, "hei": 50}],"objects": [],"start_x": 0,"start_y": 0}';
-			
+			var b:String = '{"assert_links": 0,"objects": [],"start_y": 0,"islands": [{"y2": 309, "type": "line", "ndir": "left", "x1": 690, "hei": 50, "y1": 524, "can_fall": true, "x2": 403}],"start_x": 0}';
+			//spr.json_in(b);
 		}
 		
 	}

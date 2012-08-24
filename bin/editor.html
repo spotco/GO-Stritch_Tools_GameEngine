@@ -31,11 +31,11 @@
 		#grounddetailcontrols {
 			right:0%;
 			top:305px;
-			height:60px;
+			height:180px;
 		}
 		#groundtypecontrols {
 			right:0%;
-			top:365px;
+			top:485px;
 			font-size:smaller;
 			height:55px;
 		}
@@ -47,7 +47,7 @@
 		}
 		#cameracontrols {
 			right:0%;
-			top:420px;
+			top:540px;
 		}
 		input {
 			height:30px;
@@ -58,8 +58,6 @@
 		}
 		#camera_zoom_label {
 			float:left;
-			clear:left;
-			width:50px;
 			font-size:smaller;
 		}
 		button img {
@@ -67,6 +65,10 @@
 			margin-left:10px;
 			width:30px;
 			height:30px;
+		}
+		#grounddetailcontrols img {
+			width:20px;
+			height:20px;
 		}
 	</style>
 	
@@ -133,11 +135,12 @@
 				alert("nonnumeric value");
 			}
 		}
-		function shift_all() {
+		function shift_all(dir) {
 			var val = document.getElementById("shift_entry").value;
 			if (parseInt(val)) {
 				val = parseInt(val);
-				document.getElementById("GOstrichLevelEditor2").shift_all(val);
+				dir.x *= val; dir.y *= val;
+				document.getElementById("GOstrichLevelEditor2").shift_all(dir);
 			} else {
 				alert("nonnumeric value");
 			}
@@ -152,13 +155,20 @@
 		var _camera_g;
 		var _camera_canvas_size;
 		var _camera_pos = {x:140/2,y:80/2,z:50};
-		window.onload = function() {
+		$(function() {
 			$("#objectcontrols button").each(function(i,e) {
 				e = $(e);
 				e.text(e.attr("id"));
 				e.attr({onclick:"change_object_type('"+e.attr("id")+"');"});
 				e.append( $("<img>").attr({"src":"imgs/"+e.attr("id")+".png"}) );
 			});
+			
+			$("#grounddetailcontrols input").each(function(i,e) {
+				e = $(e);
+				e.after($("<img>").attr({"src":"imgs/BG1_ground_detail/BG1_detail_"+e.attr("value")+".png"}));
+			});
+			
+			document.getElementById("dogbone").disabled = true;
 		
 			_camera_canvas_size = {wid:document.getElementById("camera_canvas").width,hei:document.getElementById("camera_canvas").height};
 			_camera_g = document.getElementById("camera_canvas").getContext("2d");
@@ -166,7 +176,7 @@
 			update_camera_canvas();
 			$("#camera_zoom_slider").slider({ orientation: "vertical", min:40, max:200, value:50, change:camera_zoom_slider_update });
 			update_camera_message();
-		}
+		});
 		function camera_canvas_click(pos) {
 			pos.y = -pos.y + _camera_canvas_size.hei;
 			pos.y = Math.round(pos.y);
@@ -190,8 +200,12 @@
 		}
 		function update_camera_message() {
 			var send_pos = {x:(_camera_pos.x*2), y:(_camera_pos.y*2), z:_camera_pos.z};
-			$("#camera_zoom_label").html("x:"+ send_pos.x + "<br/>y:" + send_pos.y + "<br/>z:" + send_pos.z);
-			document.getElementById("GOstrichLevelEditor2").change_zoom(send_pos);
+			$("#camera_zoom_label").html("x:"+ send_pos.x + " y:" + send_pos.y + " z:" + send_pos.z);
+			if (document.getElementById("GOstrichLevelEditor2").change_zoom) {
+				document.getElementById("GOstrichLevelEditor2").change_zoom(send_pos);
+			} else {
+				console.log("chrome bug: swf not loaded, pls wait");
+			}
 		}
 		function camera_zoom_slider_update(event,ui) {
 			_camera_pos.z = ui.value;
@@ -215,8 +229,8 @@
 		<input type="button" value="push_isl_hei" id="island_hei_submit" onclick="push_island_hei()" /><br />
 		<hr />
 		<input type="text" id="shift_entry" value="50" size=5 />
-		<input type="button" value="shiftx" id="shift_submit" onclick="shift_all()" />
-		<input type="button" value="shifty" id="shift_submit" onclick="shift_all()" /><br/>
+		<input type="button" value="shiftx" id="shift_submit" onclick="shift_all({x:1,y:0})" />
+		<input type="button" value="shifty" id="shift_submit" onclick="shift_all({x:0,y:1})" /><br/>
 	</div>
 		
 	<div id="ndircontrols" class="controls">
@@ -227,26 +241,26 @@
 	
 	<div id="grounddetailcontrols" class="controls">
 		<b>ground detail</b><br/>
-		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(1);" checked />1
-		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(2);"/>2
-		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(3);"/>3
-		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(4);"/>4
-		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(5);"/>5
-		<input type="radio" name="grounddetailcontrols" onclick="change_ground_detail_val(6);"/>6
+		<input type="radio" name="grounddetailcontrols" value="1" onclick="change_ground_detail_val(1);" checked />
+		<input type="radio" name="grounddetailcontrols" value="2" onclick="change_ground_detail_val(2);"/>
+		<input type="radio" name="grounddetailcontrols" value="3" onclick="change_ground_detail_val(3);"/>
+		<input type="radio" name="grounddetailcontrols" value="4" onclick="change_ground_detail_val(4);"/>
+		<input type="radio" name="grounddetailcontrols" value="5" onclick="change_ground_detail_val(5);"/>
+		<input type="radio" name="grounddetailcontrols" value="6" onclick="change_ground_detail_val(6);"/>
 	</div>
 	
 	<div id="groundtypecontrols" class="controls">
 		<b>ground type control</b><br/>
 		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('open');" checked /><font color="#0000FF">open</font>
 		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('cave');"/><font color="#C7C7C7">cave</font>
-		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('cloud');"/><font color="#FFFFFF">open</font>
+		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('cloud');"/><font color="#FFFFFF">cloud(TODO)</font>
 	</div>
 	
 	<div id="cameracontrols" class="controls">
-		<b>camera control</b><br/>
+		<b>camera control</b> <span id="camera_zoom_label"></span><br/>
 		<div id="camera_zoom_slider"></div>
-		<span id="camera_zoom_label"></span>
 		<canvas id="camera_canvas"  width="240px" height="160px"></canvas>
+		
 	</div>
 	
 	<div id="objectcontrols" class="controls">
@@ -264,7 +278,7 @@
 		<button id="ground_detail" class="objecttype_button"  ></button><br />
 		<button id="cavewall"      class="objecttype_button"  ></button><br />
 		<button id="blocker"       class="objecttype_button"  ></button><br />
-		
+		<button id="camera_area"   class="objecttype_button"  ></button><br />
 	</div>
 	
 	<object type="application/x-shockwave-flash" id="GOstrichLevelEditor2" data="GOstrichLevelEditor2.swf" width="1000px" height="650px">
@@ -275,6 +289,12 @@
 		<param name="wmode" value="direct">
 	</object>
 
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
 	<br />
 	<textarea id="msgout" style="width:100%;height:200px;">
 GOGODoggy Level Editor v1.3
@@ -292,6 +312,7 @@ TAB to change line normal direction (this changes the landing direction onto the
 (See console for verbose output)
 	</textarea>
 	<br />
-	<input type="button" value="Load JSON" onclick="json_in()" />
+	<input type="button" value="Load JSON" onclick="json_in()" style="float:left;" />
+	<input type="button"  value="Output JSON (P)" onclick="json_out()" style="float:right;" />
 </body>
 </html>
