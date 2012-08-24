@@ -5,19 +5,19 @@ package  {
 	
 	public class GameObject extends ClickPoint {
 		
-		[Embed(source = "../resc/spikes.png")] public static var OBJ_SPIKE:Class;
-		[Embed(source = "../resc/boost3.png")] public static var OBJ_SPEEDUP:Class;
-		[Embed(source = "../resc/checkerfloor.png")] public static var OBJ_GAMEEND:Class;
-		[Embed(source = "../resc/checkpoint1.png")] public static var OBJ_CHECKPOINT:Class;
-		[Embed(source = "../resc/dogcape.png")] public static var OBJ_CAPE:Class;
-		[Embed(source = "../resc/dogrocket.png")] public static var OBJ_ROCKET:Class;
-		[Embed(source = "../resc/goldenbone.png")] public static var OBJ_BONE:Class;
-		[Embed(source = "../resc/jumppads.png")] public static var OBJ_JUMPPAD:Class;
-		[Embed(source = "../resc/water.png")] public static var OBJ_WATER:Class;
-		[Embed(source = "../resc/birds.png")] public static var OBJ_BIRDS:Class;
-		[Embed(source = "../resc/ground_detail.png")] public static var OBJ_GROUND_DETAIL:Class;
-		[Embed(source = "../resc/cavewall.png")] public static var OBJ_CAVEWALL:Class;
-		[Embed(source = "../resc/blocker.png")] public static var OBJ_BLOCKER:Class;
+		[Embed(source = "../bin/imgs/spike.png")] public static var OBJ_SPIKE:Class;
+		[Embed(source = "../bin/imgs/speedup.png")] public static var OBJ_SPEEDUP:Class;
+		[Embed(source = "../bin/imgs/game_end.png")] public static var OBJ_GAMEEND:Class;
+		[Embed(source = "../bin/imgs/checkpoint.png")] public static var OBJ_CHECKPOINT:Class;
+		[Embed(source = "../bin/imgs/dogcape.png")] public static var OBJ_CAPE:Class;
+		[Embed(source = "../bin/imgs/dogrocket.png")] public static var OBJ_ROCKET:Class;
+		[Embed(source = "../bin/imgs/dogbone.png")] public static var OBJ_BONE:Class;
+		[Embed(source = "../bin/imgs/jumppad.png")] public static var OBJ_JUMPPAD:Class;
+		[Embed(source = "../bin/imgs/water.png")] public static var OBJ_WATER:Class;
+		[Embed(source = "../bin/imgs/birdflock.png")] public static var OBJ_BIRDS:Class;
+		[Embed(source = "../bin/imgs/ground_detail.png")] public static var OBJ_GROUND_DETAIL:Class;
+		[Embed(source = "../bin/imgs/cavewall.png")] public static var OBJ_CAVEWALL:Class;
+		[Embed(source = "../bin/imgs/blocker.png")] public static var OBJ_BLOCKER:Class;
 		
 		var img:DisplayObject;
 		public var objtype:String;
@@ -78,7 +78,11 @@ package  {
 		}
 		
 		public function get_jsonobject() {
-			return { type:objtype, x:normal_x, y:normal_y, label:label };
+			var o = { type:objtype, x:normal_x, y:normal_y };
+			if (label.length > 0) {
+				o["label"] = label;
+			}
+			return o;
 		}
 		
 	}

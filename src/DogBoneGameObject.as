@@ -4,7 +4,7 @@ package  {
 		public var bid:Number;
 		
 		public function DogBoneGameObject(x:Number, y:Number, bid:Number) {
-			super(x, y, GameObject.OBJ_BONE, String(bid));
+			super(x, y, GameObject.OBJ_BONE, "BID:"+String(bid));
 			this.bid = bid;
 		}
 		

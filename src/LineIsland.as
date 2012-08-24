@@ -35,7 +35,11 @@ package
 		}
 		
 		public function get_jsonobject() {
-			return { x1:x1, y1:y1, x2:x2, y2:y2, type:"line", hei:hei, ndir:ndir, can_fall:can_fall, label:label };
+			var o = { x1:x1, y1:y1, x2:x2, y2:y2, type:"line", hei:hei, ndir:ndir, can_fall:can_fall};
+			if (label.length > 0) {
+				o["label"] = label;
+			}
+			return o;
 		}
 		
 		private function draw() {
