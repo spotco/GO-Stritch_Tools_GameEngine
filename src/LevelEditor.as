@@ -326,8 +326,8 @@ package {
 				}
 				
 				var ground_type:String = LineIsland.GROUND_TYPE_OPEN;
-				if (i.ground_type) {
-					ground_type = i.ground_type;
+				if (i.ground == LineIsland.GROUND_TYPE_CAVE) {
+					ground_type = LineIsland.GROUND_TYPE_CAVE;
 				}
 				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y,ground_type, i.ndir, i.label, Number(i.hei), Boolean(i.can_fall));
 				lines.push(nline);
