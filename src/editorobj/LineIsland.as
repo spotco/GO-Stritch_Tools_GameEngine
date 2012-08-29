@@ -22,20 +22,25 @@ package editorobj {
 		public var ground_type:String;
 		
 		public function LineIsland(x1:Number,y1:Number,x2:Number,y2:Number,ground_type:String,dir:String = "left",label:String = null,hei:Number=50,can_fall:Boolean = true) {
-			this.x1 = x1;
-			this.x2 = x2;
-			this.y1 = y1;
-			this.y2 = y2;
+			position(x1, y1, x2, y2);
+			
 			this.ndir = dir;
 			this.hei = hei;
 			this.can_fall = can_fall;
-			this.x = 0;
-			this.y = 0;
 			this.label = label;
 			this.ground_type = ground_type;
 			draw();
 			
 			this.mouseEnabled = false;
+		}
+		
+		public function position(x1:Number, y1:Number, x2:Number, y2:Number) {
+			this.x1 = x1;
+			this.x2 = x2;
+			this.y1 = y1;
+			this.y2 = y2;
+			this.x = x1;
+			this.y = Common.normal_tofrom_stage_coord(y1);
 		}
 		
 		public function get_jsonobject() {
@@ -54,14 +59,14 @@ package editorobj {
 			}
 		}
 		
-		private function draw() {
+		public function draw() {
+			graphics.clear();
 			graphics.lineStyle(3, get_fill_color());
 			
-			graphics.moveTo(x1, Common.normal_tofrom_stage_coord(y1));
-			graphics.lineTo(x2, Common.normal_tofrom_stage_coord(y2));
+			graphics.moveTo(0, 0);
+			graphics.lineTo(x2 - x1, Common.normal_tofrom_stage_coord(y2) - Common.normal_tofrom_stage_coord(y1));
 			graphics.lineStyle();
 			
-			graphics.moveTo(0, 0);
 			draw_arrowhead();
 			draw_dirnormal();
 			draw_label();
@@ -72,7 +77,7 @@ package editorobj {
 				return;
 			}
 			
-			var pt_centre:Point = new Point((x2 + x1) / 2, Common.normal_tofrom_stage_coord((y2 + y1) / 2));
+			var pt_centre:Point = new Point((x2 - x1) / 2, (Common.normal_tofrom_stage_coord(y2)-Common.normal_tofrom_stage_coord(y1)) / 2);
 			var dir_vec:Vector3D = new Vector3D(x2 - x1, Common.normal_tofrom_stage_coord(y2) - Common.normal_tofrom_stage_coord(y1),0);
 			var z_vec:Vector3D = new Vector3D(0, 0, 1);
 			var normal_vec:Vector3D = dir_vec.crossProduct(z_vec);
@@ -84,8 +89,8 @@ package editorobj {
 			}
 			
 			var msg:String = this.label;
-			
-			TextRenderer.render_text(graphics, msg, pt_centre.x - normal_vec.x - (14*msg.length)/2, pt_centre.y - normal_vec.y - 15/2);
+			TextRenderer.render_text(graphics, msg, pt_centre.x - normal_vec.x - (14*msg.length)/2 , pt_centre.y - normal_vec.y - 15/2);
+
 		}
 		
 		private function draw_dirnormal() {
@@ -108,8 +113,9 @@ package editorobj {
 				normal_vec.scaleBy( -1);
 			}
 			
-			var pt_centre:Point = new Point((x2 + x1) / 2, Common.normal_tofrom_stage_coord((y2 + y1) / 2));
+			var pt_centre:Point = new Point((x2 - x1) / 2, (Common.normal_tofrom_stage_coord(y2)-Common.normal_tofrom_stage_coord(y1)) / 2);
 			var top_pt:Point = new Point(pt_centre.x + normal_vec.x, pt_centre.y + normal_vec.y);
+			
 			
 			graphics.lineStyle(2, color, alpha);
 			graphics.moveTo(pt_centre.x, pt_centre.y);
@@ -137,17 +143,17 @@ package editorobj {
 			normal_vec.scaleBy(-hei);
 			
 			var tri:Vector.<Number> = new Vector.<Number>();
-			tri.push(x1, Common.normal_tofrom_stage_coord(y1));
-			tri.push(x2, Common.normal_tofrom_stage_coord(y2));
-			tri.push(x1 + normal_vec.x, Common.normal_tofrom_stage_coord(y1) + normal_vec.y);
+			tri.push(0, 0);
+			tri.push(x2-x1, Common.normal_tofrom_stage_coord(y2)-Common.normal_tofrom_stage_coord(y1));
+			tri.push(normal_vec.x, normal_vec.y);
 			
 			graphics.beginFill(get_fill_color(), 0.4);
 			graphics.drawTriangles(tri);
 			
 			tri = new Vector.<Number>();
-			tri.push(x2, Common.normal_tofrom_stage_coord(y2));
-			tri.push(x1 + normal_vec.x, Common.normal_tofrom_stage_coord(y1) + normal_vec.y);
-			tri.push(x2 + normal_vec.x, Common.normal_tofrom_stage_coord(y2) + normal_vec.y);
+			tri.push(x2-x1, Common.normal_tofrom_stage_coord(y2) - Common.normal_tofrom_stage_coord(y1));
+			tri.push( normal_vec.x, normal_vec.y);
+			tri.push(x2-x1 + normal_vec.x, Common.normal_tofrom_stage_coord(y2) - Common.normal_tofrom_stage_coord(y1) + normal_vec.y);
 			graphics.drawTriangles(tri);
 			
 			graphics.endFill();
@@ -157,8 +163,8 @@ package editorobj {
 		private function draw_arrowhead() {
 			graphics.beginFill(get_fill_color());
 			var tri:Vector.<Number> = new Vector.<Number>();
-			var local_x2:Number = x2;
-			var local_y2:Number = Common.normal_tofrom_stage_coord(this.y2);
+			var local_x2:Number = x2-x1;
+			var local_y2:Number = Common.normal_tofrom_stage_coord(this.y2)-Common.normal_tofrom_stage_coord(this.y1);
 			var size:Number = 10;
 			
 			var line_vec:Vector3D = new Vector3D(x2 - x1, Common.normal_tofrom_stage_coord(y2) - Common.normal_tofrom_stage_coord(y1));
@@ -174,6 +180,19 @@ package editorobj {
 			tri.push(tri_base.x - normal_to_line.x * size, tri_base.y - normal_to_line.y * size);
 			graphics.drawTriangles(tri);
 			graphics.endFill();
+		}
+		
+		public static var NONE:int = 0;
+		public static var PT1:int = 1;
+		public static var PT2:int = 2;
+		public function is_hit(n_x:Number, n_y:Number):int {
+			if (Math.sqrt(Math.pow(n_x - x1, 2) + Math.pow(n_y - y1, 2)) < 10) {
+				return PT1;
+			}
+			if (Math.sqrt(Math.pow(n_x - x2, 2) + Math.pow(n_y - y2, 2)) < 10) {
+				return PT2;
+			}
+			return NONE;
 		}
 		
 	}

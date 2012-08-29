@@ -79,6 +79,9 @@ package {
 						BrowserOut.msg_to_browser("console.log", "invalid ground type");
 					}
 				});
+				ExternalInterface.addCallback("zoom", function(t) {
+					spr.zoom(t);
+				});
 			} catch (e:Error) {
 				TextRenderer.render_text(Main.spr.graphics, e.message, 50, 50, 10);
 			}

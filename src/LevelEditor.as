@@ -23,16 +23,19 @@ package {
 		var current_y:Number = 0;
 		
 		public var pts:Array = new Array;
-		var lines:Array = new Array;
-		var objects:Array = new Array;
+		public var lines:Array = new Array;
+		public var objects:Array = new Array;
 		var undo_stack:Array = new Array;
+		var redo_stack:Array = new Array;
 		var bids_list:Array;
 		var line_ndir_mode:String = LineIsland.NDIR_LEFT;
 		var line_ground_mode:String = LineIsland.GROUND_TYPE_OPEN;
 		
+		//[{pt:null,obj:{ClickPoint}},{pt:LineIsland.PT1,obj:{LineIsland}}]
+		public var move_tars:Array = new Array();
+		
 		var player_start_pt:ClickPoint = null;
 		public var obj_label_count:Number = 0;
-		public var line_label_count:Number = 0;
 		public var cur_sel_pt:ClickPoint = null;
 		public var lastkey:uint = 0x000000;
 		var camerastate = { x:140, y:80, z:50 };
@@ -78,27 +81,30 @@ package {
 		}
 		
 		private function set_scroll_rect() {
-			this.scrollRect = new Rectangle(current_x, current_y, Main.WID, Main.HEI);
+			this.scrollRect = new Rectangle(current_x, current_y, Main.WID*(1 / scaleX), Main.HEI*(1 / scaleY));
 		}
 		
 		private function draw_grid() {
 			this.graphics.clear();
 			grid_draw.graphics.clear();
 			
+			var HEI:Number = Main.HEI * (1 / scaleX);
+			var WID:Number = Main.WID * (1 / scaleY);
+			
 			var ct = 0;
-			for (var i:int = Math.floor(current_y / 50) * 50 + Main.HEI; i >= current_y; i -= 50) {
-				TextRenderer.render_text(grid_draw.graphics, -(i - Main.HEI) + "px", current_x, i);
+			for (var i:int = Math.floor(current_y / 50) * 50 + HEI; i >= current_y; i -= 50) {
+				TextRenderer.render_text( grid_draw.graphics, printf("%1.0f",-(i - HEI))  + "px", current_x, i);
 				grid_draw.graphics.lineStyle(1, 0xFFFFFF, 0.3);
 				grid_draw.graphics.moveTo(0, i);
-				grid_draw.graphics.lineTo(current_x + Main.WID, i);
+				grid_draw.graphics.lineTo(current_x + WID, i);
 				grid_draw.graphics.lineStyle();
 				
 			}
 			
-			for (i = Math.floor(current_x / 50) * 50; i <= current_x + Main.WID; i += 50) {
-				TextRenderer.render_text(grid_draw.graphics, i+"px", i, current_y+Main.HEI-20);
+			for (i = Math.floor(current_x / 50) * 50; i <= current_x + WID; i += 50) {
+				TextRenderer.render_text(grid_draw.graphics, printf("%1.0f",i)+"px", i, current_y+HEI-20);
 				grid_draw.graphics.lineStyle(1, 0xFFFFFF, 0.3);
-				grid_draw.graphics.moveTo(i, Main.HEI);
+				grid_draw.graphics.moveTo(i, HEI);
 				grid_draw.graphics.lineTo(i, current_y);
 				grid_draw.graphics.lineStyle();
 				
@@ -107,15 +113,89 @@ package {
 		
 		private function add_controls() {
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			stage.addEventListener(MouseEvent.MOUSE_UP, onClick);
+			stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp );
 		}
 		
-		private function onClick(e:MouseEvent) {
-			var click_x:Number = stage.mouseX+current_x;
-			var click_y:Number = Main.HEI - stage.mouseY - current_y;
+		private function onMouseDown(e:MouseEvent) {
+			var click_x:Number = this.mouseX;
+			var click_y:Number = Common.normal_tofrom_stage_coord(this.mouseY);
 			
-			if (e.shiftKey) {
+			click_x = Common.roundDecimal(click_x, 1);
+			click_y = Common.roundDecimal(click_y, 1);
+			
+			if (lastkey == Keyboard.A) { 
+				objects.forEach(function(i) {
+					if (i.is_hit(click_x, click_y)) {
+						move_tars.push( { pt:null, obj:i } );
+						return;
+					}
+				});
+				
+				pts.forEach(function(i) {
+					if (i.is_hit(click_x, click_y)) {
+						move_tars.push( { pt:null, obj:i } );
+					}
+				});
+				lines.forEach(function(i) {
+					var ret:int = i.is_hit(click_x, click_y);
+					if (ret != LineIsland.NONE) {
+						move_tars.push( { pt:ret, obj:i } );
+					}
+				});
+			}
+		}
+		
+		private function onMouseUp(e:MouseEvent) {
+			var click_x:Number = this.mouseX;
+			var click_y:Number = Common.normal_tofrom_stage_coord(this.mouseY);
+			
+			click_x = Common.roundDecimal(click_x, 1);
+			click_y = Common.roundDecimal(click_y, 1);
+			
+			if (move_tars.length > 0) {
+				move_tars.forEach(function(i) {
+					if (i.pt == null) {
+						(i.obj as ClickPoint).position(click_x, click_y);
+					} else {
+						if (i.pt == LineIsland.PT1) {
+							(i.obj as LineIsland).position(click_x, click_y, i.obj.x2, i.obj.y2);
+							(i.obj as LineIsland).draw();
+						} else if (i.pt == LineIsland.PT2) {
+							(i.obj as LineIsland).position(i.obj.x1, i.obj.y1, click_x, click_y);
+							(i.obj as LineIsland).draw();
+						}
+					}
+				});
+				move_tars.splice(0, move_tars.length);
+				return;
+			} else if (lastkey == Keyboard.D) {				
+				var to_remove:Array = new Array();
+				var to_remove_tar:Array;
+				var removef:Function = function(i) {
+					var ret = i.is_hit(click_x, click_y);
+					if (ret == true || ret == 1 || ret == 2) {
+						to_remove.push(i);
+					}
+				};
+				var to_remove_pushf:Function = function(i) {
+					removeChild(i);
+					to_remove_tar.splice(to_remove_tar.indexOf(i), 1);
+					undo_stack.splice(undo_stack.indexOf(i), 1);
+				}
+				
+				var tars = [objects, pts, lines];
+				tars.forEach(function(i) {
+					to_remove_tar = i;
+					to_remove_tar.forEach(removef);
+					to_remove.forEach(to_remove_pushf);
+					to_remove = [];
+				});
+				
+			} else if (lastkey == Keyboard.A) {
+				return;
+			} else if (e.shiftKey) {
 				for each(var i:ClickPoint in pts) {
 					if (Common.pt_fuzzy_eq(click_x, click_y, i.normal_x, i.normal_y) && e.shiftKey) {
 						sel_pt(i);
@@ -134,7 +214,6 @@ package {
 				lastkey = 0x000000;
 			} else if (lastkey == Keyboard.Q) {
 				desel_all();
-				
 				
 				var newobj:GameObject;
 				if (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER || cur_obj_type == GameObject.OBJ_CAMERA_AREA) {
@@ -169,11 +248,16 @@ package {
 					var dir = new Vector3D(wid, hei, 0);
 					dir.normalize();
 					newobj = new DirectionalGameObject(click_x, click_y, cur_obj_type, {x:Common.roundDecimal(dir.x, 2),y:Common.roundDecimal(dir.y, 2)}, String(obj_label_count));
-					
+				} else if (cur_obj_type == GameObject.OBJ_BREAKABLE_WALL || cur_obj_type == GameObject.OBJ_SPIKEVINE) {
+					if (!pts[0]) {
+						return;
+					}
+					newobj = new LineObject(click_x, click_y, pts[pts.length - 1].normal_x, pts[pts.length - 1].normal_y, cur_obj_type, String(obj_label_count));
 				} else {
 					newobj = new GameObject(click_x, click_y, cur_obj_type, String(obj_label_count));
 				}
 				
+				redo_stack.splice(0,redo_stack.length);
 				objects.push(newobj);
 				addChild(newobj);
 				lastkey = 0x000000;
@@ -202,7 +286,8 @@ package {
 					
 					var label:String = "";
 					if (LINE_LABELS_ON) {
-						label = String(line_label_count);
+						label = String(obj_label_count);
+						obj_label_count++;
 					}
 					nline = new LineIsland(cur_sel_pt.normal_x, cur_sel_pt.normal_y, click_x, click_y, line_ground_mode, line_ndir_mode, label, cur_island_hei, CAN_FALL_THROUGH_LINE);
 					
@@ -225,6 +310,40 @@ package {
 					added_point = true;
 					undo_stack.push(npt);
 				}
+			}
+		}
+		
+		public function zoom(val:Number) {
+			var tarx:Number = scaleX + val;
+			var tary:Number = scaleY + val;
+			if (tarx > 0.3 && tary > 0.3 && tarx < 2 && tary < 2) {
+				scaleX = tarx;
+				scaleY = tary;
+				draw_grid();
+				set_scroll_rect();
+				set_obj_ycoords();
+			}
+		}
+		
+		private function set_obj_ycoords() {
+			pts.forEach(function(i) {
+				i.y = Common.normal_tofrom_stage_coord(i.normal_y);
+			});
+			objects.forEach(function(i) {
+				i.y = Common.normal_tofrom_stage_coord(i.normal_y);
+			});
+			lines.forEach(function(i) {
+				i.y = Common.normal_tofrom_stage_coord(i.y1);
+			});
+			redo_stack.forEach(function(i) {
+				if (i is LineIsland) {
+					i.y = Common.normal_tofrom_stage_coord(i.y1);
+				} else if (i is ClickPoint) {
+					i.y = Common.normal_tofrom_stage_coord(i.normal_y);
+				}
+			});
+			if (player_start_pt) {
+				player_start_pt.y = Common.normal_tofrom_stage_coord(player_start_pt.normal_y);
 			}
 		}
 		
@@ -277,7 +396,32 @@ package {
 				undo();
 			} else if (e.keyCode == Keyboard.P) {
 				json_out();
+			} else if (e.keyCode == Keyboard.MINUS) {
+				zoom(-0.1);
+			} else if (e.keyCode == Keyboard.EQUAL) {
+				zoom(0.1);
+			} else if (e.keyCode == Keyboard.X) {
+				redo();
 			}
+			
+		}
+		
+		public function redo() {
+			if (redo_stack.length == 0) {
+				BrowserOut.msg_to_browser("console.log", "redo stack empty");
+				return;
+			}
+			var o = redo_stack.pop();
+			undo_stack.push(o);
+			addChild(o);
+			if (o is GameObject) {
+				objects.push(o);
+			} else if (o is LineIsland) {
+				lines.push(o);
+			} else if (o is ClickPoint) {
+				pts.push(o);
+			}
+			desel_all();
 		}
 		
 		public function json_out() {
@@ -354,7 +498,8 @@ package {
 					nobj = new DogBoneGameObject(x, y, Number(o.bid));
 				} else if (type_class == GameObject.OBJ_JUMPPAD || type_class == GameObject.OBJ_SPEEDUP) {
 					nobj = new DirectionalGameObject(x, y, type_class, o.dir, label);
-					
+				} else if (type_class == GameObject.OBJ_SPIKEVINE || type_class == GameObject.OBJ_BREAKABLE_WALL) {
+					nobj = new LineObject(x, y, o.x2, o.y2, type_class, label);
 				} else if (type_class != null) {
 					if (type_class == GameObject.OBJ_GROUND_DETAIL) {
 						nobj = new GroundDetailGameObject(x, y, Number(o.img), label);
@@ -371,6 +516,10 @@ package {
 				BrowserOut.msg_to_browser("console.log", printf("Object label(%s) at(%f,%f)", nobj.label,nobj.normal_x, nobj.normal_y));
 			}
 			
+			if (player_start_pt) {
+				removeChild(player_start_pt);
+			}
+			
 			var pstartx:Number = 0;
 			var pstarty:Number = 0;
 			if (json_o.start_x) {
@@ -380,12 +529,16 @@ package {
 				pstarty = json_o.start_y;
 			}
 			
+			pstartx = Common.roundDecimal(pstartx, 1);
+			pstarty = Common.roundDecimal(pstarty, 1);
+			
 			var playerstart:ClickPoint = new ClickPoint(pstartx, pstarty, 0xFFFF00, "Player Start");
 			BrowserOut.msg_to_browser("console.log", printf("Player start at(%f,%f)",playerstart.normal_x, playerstart.normal_y));
 			this.player_start_pt = playerstart;
 			addChild(playerstart);
 			
 			reset_bid();
+			set_obj_ycoords();
 			BrowserOut.msg_to_browser("console.log", "Successfully parsed json.");
 		}
 		
@@ -456,6 +609,7 @@ package {
 		
 		public function undo() {
 			if (undo_stack.length == 0) {
+				BrowserOut.msg_to_browser("console.log", "undo stack empty");
 				return;
 			}
 			var s:Sprite = undo_stack.pop();
@@ -463,9 +617,9 @@ package {
 			pts = Common.remove_from(s, pts);
 			objects = Common.remove_from(s, objects);
 			removeChild(s);
+			redo_stack.push(s);
 			desel_all();
 		}
-		
 		
 		private function move(e:KeyboardEvent) {
 			var mov_val:Number = 40;

@@ -5,7 +5,7 @@ package  {
 	public class Common {
 		
 		public static function normal_tofrom_stage_coord(normal_coord_y:Number):Number {
-			return Main.HEI - normal_coord_y;
+			return Main.HEI*(1/Main.spr.scaleY) - normal_coord_y;
 		}	
 		
 		public static function pt_fuzzy_eq(x1:Number, y1:Number, x2:Number, y2:Number, d:Number = 10):Boolean {
@@ -46,6 +46,10 @@ package  {
 				return GameObject.OBJ_BLOCKER;
 			} else if (t == "camera_area") {
 				return GameObject.OBJ_CAMERA_AREA;
+			} else if (t == "spikevine") {
+				return GameObject.OBJ_SPIKEVINE;
+			} else if (t == "breakable_wall") {
+				return GameObject.OBJ_BREAKABLE_WALL;
 			} else {
 				BrowserOut.msg_to_browser("console.log", "error in str_to_gameobj in common");
 				return null;

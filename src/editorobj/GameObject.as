@@ -19,6 +19,8 @@ package editorobj {
 		[Embed(source = "../../bin/imgs/cavewall.png")] public static var OBJ_CAVEWALL:Class;
 		[Embed(source = "../../bin/imgs/blocker.png")] public static var OBJ_BLOCKER:Class;
 		[Embed(source = "../../bin/imgs/camera_area.png")] public static var OBJ_CAMERA_AREA:Class;
+		[Embed(source = "../../bin/imgs/spikevine.png")] public static var OBJ_SPIKEVINE:Class;
+		[Embed(source = "../../bin/imgs/breakable_wall.png")] public static var OBJ_BREAKABLE_WALL:Class;
 		
 		public var img:DisplayObject;
 		public var objtype:String;
@@ -56,7 +58,12 @@ package editorobj {
 			} else if (type == OBJ_BIRDS) {
 				img = new OBJ_BIRDS as Bitmap;
 				objtype = "birdflock";
-				
+			} else if (type == OBJ_BREAKABLE_WALL) {
+				img = new OBJ_BREAKABLE_WALL as Bitmap;
+				objtype = "breakable_wall"
+			} else if (type == OBJ_SPIKEVINE) {
+				img = new OBJ_SPIKEVINE as Bitmap;
+				objtype = "spikevine";
 			} else if (type == OBJ_GROUND_DETAIL) {
 				objtype = "ground_detail";
 			} else if (type == OBJ_BLOCKER) {

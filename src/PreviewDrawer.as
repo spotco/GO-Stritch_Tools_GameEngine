@@ -1,4 +1,5 @@
 package  {
+	import editorobj.LineIsland;
 	import flash.display.Sprite;
 	import flash.events.TimerEvent;
 	import flash.ui.Keyboard;
@@ -24,34 +25,38 @@ package  {
 				return;
 			}
 			
-			if (editor.lastkey == Keyboard.W) {
+			if (Main.spr.move_tars.length > 0) {
+				Main.spr.move_tars.forEach(function(i) {
+					if (i.pt == null) {
+						graphics.beginFill(0xFFFF00,0.7);
+						graphics.drawCircle(i.obj.x, i.obj.y, 10);
+						graphics.drawCircle(Main.spr.mouseX,Main.spr.mouseY, 10);
+					} else {
+						graphics.lineStyle(3, 0xFFFF00,0.7);
+						if (i.pt == LineIsland.PT1) {
+							graphics.moveTo(i.obj.x2, Common.normal_tofrom_stage_coord(i.obj.y2));
+							graphics.lineTo(Main.spr.mouseX, Main.spr.mouseY);
+						} else if (i.pt == LineIsland.PT2) {
+							graphics.moveTo(i.obj.x1, Common.normal_tofrom_stage_coord(i.obj.y1));
+							graphics.lineTo(Main.spr.mouseX, Main.spr.mouseY);
+						}
+					}
+				});
+			} else if (editor.lastkey == Keyboard.W) {
 				this.graphics.beginFill(0xFFFF00);
-				this.graphics.drawCircle(stage.mouseX + editor.current_x, stage.mouseY + editor.current_y, 5);
-				TextRenderer.render_text(this.graphics, "Player Start", stage.mouseX + editor.current_x, stage.mouseY + editor.current_y);
+				this.graphics.drawCircle(Main.spr.mouseX, Main.spr.mouseY, 5);
+				TextRenderer.render_text(this.graphics, "Player Start", Main.spr.mouseX, Main.spr.mouseY);
 				this.graphics.endFill();
 			} else if (editor.lastkey == Keyboard.Q) {
 				this.graphics.beginFill(0x00FFFF);
-				this.graphics.drawCircle(stage.mouseX + editor.current_x, stage.mouseY + editor.current_y, 5);
-				TextRenderer.render_text(this.graphics, String(editor.obj_label_count), stage.mouseX + editor.current_x, stage.mouseY + editor.current_y);
+				this.graphics.drawCircle(Main.spr.mouseX, Main.spr.mouseY, 5);
+				TextRenderer.render_text(this.graphics, String(editor.obj_label_count), Main.spr.mouseX, Main.spr.mouseY);
 				this.graphics.endFill();
 			} else if (editor.cur_sel_pt != null) {
 				this.graphics.lineStyle(3, 0x0000FF);
 				this.graphics.moveTo(editor.cur_sel_pt.x, editor.cur_sel_pt.y);
-				this.graphics.lineTo(stage.mouseX+editor.current_x, stage.mouseY+editor.current_y);
+				this.graphics.lineTo(Main.spr.mouseX, Main.spr.mouseY);
 				this.graphics.lineStyle(0);
-				
-				/*var click_x:Number = stage.mouseX + editor.current_x;
-				var click_y:Number = stage.mouseY + editor.current_y;
-				for each(var i:ClickPoint in editor.pts) {
-					if (i != editor.cur_sel_pt && Common.pt_fuzzy_eq(click_x, click_y, i.x, i.y)) {
-						click_x = i.normal_x;
-						click_y = i.normal_y;
-						this.graphics.lineStyle(3, 0xFF0000);
-						this.graphics.drawCircle(i.x, i.y, 10);
-						this.graphics.lineStyle(0);
-						break;
-					}
-				}*/
 				
 			}
 		}

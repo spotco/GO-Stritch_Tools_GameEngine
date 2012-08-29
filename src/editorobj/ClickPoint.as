@@ -13,12 +13,10 @@ package editorobj {
 		private var mouseover_draw:Sprite = new Sprite;
 		
 		public function ClickPoint(x:Number,y:Number,color:uint = 0x00FF00,label:String = null) {
-			normal_x = x;
-			normal_y = y;
 			this.color = color;
 			this.label = label;
-			this.x = x;
-			this.y = Common.normal_tofrom_stage_coord(y);
+			
+			position(x, y);
 			
 			draw();
 			
@@ -26,6 +24,13 @@ package editorobj {
 			addChild(mouseover_draw);
 			this.addEventListener(MouseEvent.MOUSE_OVER, mouse_over);
 			this.addEventListener(MouseEvent.MOUSE_OUT, mouse_out);
+		}
+		
+		public function position(normal_x:Number, normal_y:Number) {
+			this.normal_x = normal_x;
+			this.normal_y = normal_y;
+			this.x = normal_x;
+			this.y = Common.normal_tofrom_stage_coord(normal_y);
 		}
 		
 		private function mouse_over(e:MouseEvent) {
@@ -69,6 +74,13 @@ package editorobj {
 			emph = b;
 			draw();
 			mouseover_draw.graphics.clear();
+		}
+		
+		public function is_hit(n_x:Number, n_y:Number):Boolean {
+			if (Math.sqrt(Math.pow(n_x - normal_x, 2) + Math.pow(n_y - normal_y, 2)) < 10) {
+				return true;
+			}
+			return false;
 		}
 		
 	}
