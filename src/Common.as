@@ -50,6 +50,10 @@ package  {
 				return GameObject.OBJ_SPIKEVINE;
 			} else if (t == "breakable_wall") {
 				return GameObject.OBJ_BREAKABLE_WALL;
+			} else if (t == "island_fill") {
+				return GameObject.OBJ_ISLAND_FILL;
+			} else if (t == "swingvine") {
+				return GameObject.OBJ_SWINGVINE;
 			} else {
 				BrowserOut.msg_to_browser("console.log", "error in str_to_gameobj in common");
 				return null;

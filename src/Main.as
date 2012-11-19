@@ -75,6 +75,8 @@ package {
 						spr.change_ground_mode(LineIsland.GROUND_TYPE_CAVE);
 					} else if (t == "cloud") {
 						BrowserOut.msg_to_browser("console.log", "invalid ground type");
+					} else if (t == "bridge") {
+						spr.change_ground_mode(LineIsland.GROUND_TYPE_BRIDGE);
 					} else {
 						BrowserOut.msg_to_browser("console.log", "invalid ground type");
 					}

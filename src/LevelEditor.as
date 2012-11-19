@@ -216,7 +216,7 @@ package {
 				desel_all();
 				
 				var newobj:GameObject;
-				if (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER || cur_obj_type == GameObject.OBJ_CAMERA_AREA) {
+				if (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER || cur_obj_type == GameObject.OBJ_CAMERA_AREA || cur_obj_type == GameObject.OBJ_ISLAND_FILL) {
 					if (!pts[0]) {
 						return;
 					}
@@ -590,6 +590,22 @@ package {
 		public function get_current_json():String {
 			var jso:Object = { };
 			
+			var connect_pts = {};
+			for each (var l:LineIsland in lines) {
+				var pts = [ { x:l.x1, y:l.y1 }, { x:l.x2, y:l.y2 } ];
+				for each(var pt in pts) {
+					if (connect_pts["x1"] == undefined || pt.x < connect_pts["x1"]) {
+						connect_pts["x1"] = pt.x;
+						connect_pts["y1"] = pt.y;
+					}
+					if (connect_pts["x2"] == undefined || pt.x > connect_pts["x2"]) {
+						connect_pts["x2"] = pt.x;
+						connect_pts["y2"] = pt.y;
+					}
+				}
+			}
+			
+			jso["connect_pts"] = connect_pts;
 			jso["start_x"] = player_start_pt != null ? player_start_pt.x : 0;
 			jso["start_y"] = player_start_pt != null ? Common.normal_tofrom_stage_coord(player_start_pt.y) : 0;
 			jso["assert_links"] = calc_links();

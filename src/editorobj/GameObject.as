@@ -21,6 +21,8 @@ package editorobj {
 		[Embed(source = "../../bin/imgs/camera_area.png")] public static var OBJ_CAMERA_AREA:Class;
 		[Embed(source = "../../bin/imgs/spikevine.png")] public static var OBJ_SPIKEVINE:Class;
 		[Embed(source = "../../bin/imgs/breakable_wall.png")] public static var OBJ_BREAKABLE_WALL:Class;
+		[Embed(source = "../../bin/imgs/island_fill.png")] public static var OBJ_ISLAND_FILL:Class;
+		[Embed(source = "../../bin/imgs/swingvine.png")] public static var OBJ_SWINGVINE:Class;
 		
 		public var img:DisplayObject;
 		public var objtype:String;
@@ -72,9 +74,14 @@ package editorobj {
 				objtype = "cavewall";
 			} else if (type == OBJ_CAMERA_AREA) {
 				objtype = "camera_area";
+			} else if (type == OBJ_ISLAND_FILL) {
+				objtype = "island_fill";
+			} else if (type == OBJ_SWINGVINE) {
+				img = new OBJ_SWINGVINE as Bitmap;
+				objtype = "swingvine";
 			} else {
 				objtype = "";
-				TextRenderer.render_text(Main.spr.graphics, "gobj_err:"+type, 50, 50, 10);
+				TextRenderer.render_text(Main.spr.graphics, "gobj_err in gameobject.as:"+type, 50, 50, 10);
 			}
 			
 			if (img) {

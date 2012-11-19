@@ -37,6 +37,7 @@
 			top:0;
 			left:0;
 			overflow-y:auto;
+			height:100%;
 		}
 		#cameracontrols {
 			width:300px;
@@ -251,6 +252,7 @@
 		<b>ground type control</b><br/>
 		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('open');" checked /><font color="#0000FF">open</font>
 		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('cave');"/><font color="#C7C7C7">cave</font>
+		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('bridge');"/><font color="#5E2612">bridge</font>
 	</div>
 	
 	<div id="grounddetailcontrols" class="controls">
@@ -285,10 +287,12 @@
 		<button id="speedup"       class="objecttype_button"  ></button><br />
 		<button id="ground_detail" class="objecttype_button"  ></button><br />
 		<button id="cavewall"      class="objecttype_button"  ></button><br />
+		<button id="island_fill"   class="objecttype_button"  ></button><br />
 		<button id="blocker"       class="objecttype_button"  ></button><br />
 		<button id="camera_area"   class="objecttype_button"  ></button><br />
 		<button id="breakable_wall" class="objecttype_button" ></button><br />
 		<button id="spikevine"	   class="objecttype_button"  ></button><br />
+		<button id="swingvine"	   class="objecttype_button"  ></button><br />
 	</div>
 
 	<textarea id="msgout" style="width:100%;height:200px;">
