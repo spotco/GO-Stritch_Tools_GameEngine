@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -175,7 +176,8 @@
 			update_camera_canvas();
 			$("#camera_zoom_slider").slider({ orientation: "vertical", min:40, max:200, value:50, change:camera_zoom_slider_update });
 			update_camera_message();
-			$(".controls").draggable().resizable();
+			$(".controls").draggable({handle:"b"});
+			$('.controls > b').css('cursor', 'move');
 			$("body").css({"text-align":"left"});
 			setTimeout(function() {
 				$("body").css({"text-align":"center"});//chrome bugfix
@@ -274,7 +276,7 @@
 	</div>
 	
 	<div id="objectcontrols" class="controls">
-		<b>Object</b><br />
+		<b id="objlabel">Object</b><br />
 		<button id="spike"         class="objecttype_button"  ></button><br />
 		<button id="jumppad"       class="objecttype_button"  ></button><br />
 		<button id="dogbone"       class="objecttype_button"  ></button><br />
