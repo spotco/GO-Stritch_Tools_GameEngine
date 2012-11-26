@@ -88,9 +88,9 @@ package {
 				TextRenderer.render_text(Main.spr.graphics, e.message, 50, 50, 10);
 			}
 			
-			var a:String = '{"assert_links": 0,"islands": [{"x2": 370, "can_fall": true, "y2": 472, "ndir": "left", "label": "", "type": "line", "x1": 99, "y1": 191, "hei": 50}],"objects": [],"start_x": 0,"start_y": 0}';
-			var b:String = '{"assert_links": 0,"objects": [],"start_y": 0,"islands": [{"y2": 309, "type": "line", "ndir": "left", "x1": 690, "hei": 50, "y1": 524, "can_fall": true, "x2": 403}],"start_x": 0}';
-			//spr.json_in(b);
+			//var a:String = '{"start_x": 0,"connect_pts": {}, "start_y": 0,"assert_links": 0,"islands": [],"objects": [{"label": "0", "x": 284, "y": 464, "y2": 612, "x2": 357, "type": "spikevine"}]}';
+			//var b:String = '{"assert_links": 0,"objects": [],"start_y": 0,"islands": [{"y2": 309, "type": "line", "ndir": "left", "x1": 690, "hei": 50, "y1": 524, "can_fall": true, "x2": 403}],"start_x": 0}';
+			//spr.json_in(a);
 		}
 		
 	}

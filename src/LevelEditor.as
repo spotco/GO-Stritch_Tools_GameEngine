@@ -429,6 +429,7 @@ package {
 		}
 		
 		public function json_in(json:String) {
+			
 			this.draw_grid();
 			var json_o:Object;
 			try {
@@ -472,6 +473,8 @@ package {
 				var ground_type:String = LineIsland.GROUND_TYPE_OPEN;
 				if (i.ground == LineIsland.GROUND_TYPE_CAVE) {
 					ground_type = LineIsland.GROUND_TYPE_CAVE;
+				} else if (i.ground == LineIsland.GROUND_TYPE_BRIDGE) {
+					ground_type = LineIsland.GROUND_TYPE_BRIDGE;
 				}
 				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y,ground_type, i.ndir, i.label, Number(i.hei), Boolean(i.can_fall));
 				lines.push(nline);
@@ -492,7 +495,7 @@ package {
 				
 				if (type_class == GameObject.OBJ_CAMERA_AREA) {
 					nobj = new CameraAreaGameObject(x, y, type_class, Number(o.width), Number(o.height), o.camera);
-				} else if (type_class == GameObject.OBJ_WATER || type_class == GameObject.OBJ_BLOCKER || type_class == GameObject.OBJ_CAVEWALL) {
+				} else if (type_class == GameObject.OBJ_WATER || type_class == GameObject.OBJ_BLOCKER || type_class == GameObject.OBJ_CAVEWALL || type_class == GameObject.OBJ_ISLAND_FILL) {					
 					nobj = new AreaGameObject(x, y, type_class, Number(o.width), Number(o.height), label);
 				} else if (type_class == GameObject.OBJ_BONE) {
 					nobj = new DogBoneGameObject(x, y, Number(o.bid));
@@ -568,9 +571,12 @@ package {
 					if (i is ClickPoint) {
 						(i as ClickPoint).normal_x += n.x;
 						i.x += n.x;
-						
 						(i as ClickPoint).normal_y += n.y;
 						i.y -= n.y;
+						if (i is LineObject) {
+							(i as LineObject).x2 += n.x;
+							(i as LineObject).y2 += n.y;
+						}
 					} else if (i is LineIsland) {
 						(i as LineIsland).x1 += n.x;
 						(i as LineIsland).x2 += n.x;
