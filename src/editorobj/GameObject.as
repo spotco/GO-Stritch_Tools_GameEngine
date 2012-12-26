@@ -23,6 +23,7 @@ package editorobj {
 		[Embed(source = "../../bin/imgs/breakable_wall.png")] public static var OBJ_BREAKABLE_WALL:Class;
 		[Embed(source = "../../bin/imgs/island_fill.png")] public static var OBJ_ISLAND_FILL:Class;
 		[Embed(source = "../../bin/imgs/swingvine.png")] public static var OBJ_SWINGVINE:Class;
+		[Embed(source = "../../bin/imgs/robotminion.png")] public static var OBJ_ROBOTMINION:Class;
 		
 		public var img:DisplayObject;
 		public var objtype:String;
@@ -60,6 +61,9 @@ package editorobj {
 			} else if (type == OBJ_BIRDS) {
 				img = new OBJ_BIRDS as Bitmap;
 				objtype = "birdflock";
+			} else if (type == OBJ_ROBOTMINION) {
+				img = new OBJ_ROBOTMINION as Bitmap;
+				objtype = "robotminion";
 			} else if (type == OBJ_BREAKABLE_WALL) {
 				img = new OBJ_BREAKABLE_WALL as Bitmap;
 				objtype = "breakable_wall"

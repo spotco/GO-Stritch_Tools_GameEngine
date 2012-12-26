@@ -248,7 +248,7 @@ package {
 					var dir = new Vector3D(wid, hei, 0);
 					dir.normalize();
 					newobj = new DirectionalGameObject(click_x, click_y, cur_obj_type, {x:Common.roundDecimal(dir.x, 2),y:Common.roundDecimal(dir.y, 2)}, String(obj_label_count));
-				} else if (cur_obj_type == GameObject.OBJ_BREAKABLE_WALL || cur_obj_type == GameObject.OBJ_SPIKEVINE) {
+				} else if (cur_obj_type == GameObject.OBJ_BREAKABLE_WALL || cur_obj_type == GameObject.OBJ_SPIKEVINE || cur_obj_type == GameObject.OBJ_SWINGVINE) {
 					if (!pts[0]) {
 						return;
 					}

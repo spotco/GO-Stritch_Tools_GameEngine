@@ -54,6 +54,8 @@ package  {
 				return GameObject.OBJ_ISLAND_FILL;
 			} else if (t == "swingvine") {
 				return GameObject.OBJ_SWINGVINE;
+			} else if (t == "robotminion") {
+				return GameObject.OBJ_ROBOTMINION;
 			} else {
 				BrowserOut.msg_to_browser("console.log", "error in str_to_gameobj in common");
 				return null;
