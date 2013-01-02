@@ -10,7 +10,9 @@ package editorobj {
 		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_5.png")] public static var DETAIL_5:Class;
 		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_6.png")] public static var DETAIL_6:Class;
 		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_7.png")] public static var DETAIL_7:Class;
-		private static var details:Array = [null,DETAIL_1, DETAIL_2, DETAIL_3, DETAIL_4, DETAIL_5, DETAIL_6, DETAIL_7];
+		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_8.png")] public static var DETAIL_8:Class;
+		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_9.png")] public static var DETAIL_9:Class;
+		private static var details:Array = [null,DETAIL_1, DETAIL_2, DETAIL_3, DETAIL_4, DETAIL_5, DETAIL_6, DETAIL_7,DETAIL_8,DETAIL_9];
 		
 		public var img_n:Number;
 		

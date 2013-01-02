@@ -14,6 +14,9 @@ package {
 		public static var spr:LevelEditor;
 		public static var preview_drawer:PreviewDrawer;
 		
+		//to add object, add to Common, Add bitmap class to gameobject and add to gameobj constructor
+		//change in leveleditor if area/line object (both onmouseup and json_in
+		
 		public function Main():void {
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -77,6 +80,8 @@ package {
 						BrowserOut.msg_to_browser("console.log", "invalid ground type");
 					} else if (t == "bridge") {
 						spr.change_ground_mode(LineIsland.GROUND_TYPE_BRIDGE);
+					} else if (t == "lab") {
+						spr.change_ground_mode(LineIsland.GROUND_TYPE_LAB);
 					} else {
 						BrowserOut.msg_to_browser("console.log", "invalid ground type");
 					}

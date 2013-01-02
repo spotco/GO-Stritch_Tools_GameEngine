@@ -56,6 +56,12 @@ package  {
 				return GameObject.OBJ_SWINGVINE;
 			} else if (t == "robotminion") {
 				return GameObject.OBJ_ROBOTMINION;
+			} else if (t == "launcherrobot") {
+				return GameObject.OBJ_LAUNCHERROBOT;
+			} else if (t == "copter") {
+				return GameObject.OBJ_COPTER;
+			} else if (t == "labwall") {
+				return GameObject.OBJ_LABWALL;
 			} else {
 				BrowserOut.msg_to_browser("console.log", "error in str_to_gameobj in common");
 				return null;

@@ -24,6 +24,9 @@ package editorobj {
 		[Embed(source = "../../bin/imgs/island_fill.png")] public static var OBJ_ISLAND_FILL:Class;
 		[Embed(source = "../../bin/imgs/swingvine.png")] public static var OBJ_SWINGVINE:Class;
 		[Embed(source = "../../bin/imgs/robotminion.png")] public static var OBJ_ROBOTMINION:Class;
+		[Embed(source = "../../bin/imgs/launcherrobot.png")] public static var OBJ_LAUNCHERROBOT:Class;
+		[Embed(source = "../../bin/imgs/copter.png")] public static var OBJ_COPTER:Class;
+		[Embed(source = "../../bin/imgs/labwall.png")] public static var OBJ_LABWALL:Class;
 		
 		public var img:DisplayObject;
 		public var objtype:String;
@@ -83,6 +86,15 @@ package editorobj {
 			} else if (type == OBJ_SWINGVINE) {
 				img = new OBJ_SWINGVINE as Bitmap;
 				objtype = "swingvine";
+			} else if (type == OBJ_LAUNCHERROBOT) {
+				img = new OBJ_LAUNCHERROBOT as Bitmap;
+				objtype = "launcherrobot";
+			} else if (type == OBJ_COPTER) {
+				img = new OBJ_COPTER as Bitmap;
+				objtype = "copter";
+			} else if (type == OBJ_LABWALL) {
+				img = new OBJ_LABWALL as Bitmap;
+				objtype = "labwall";
 			} else {
 				objtype = "";
 				TextRenderer.render_text(Main.spr.graphics, "gobj_err in gameobject.as:"+type, 50, 50, 10);

@@ -30,6 +30,8 @@
 			width:160px;
 			right:0px;
 			top:437px;
+			height:100px;
+			overflow-y:auto;
 		}
 		#groundtypecontrols font {
 			text-shadow: 0.1em 0.1em 0.2em black;
@@ -78,18 +80,25 @@
 			if (targ.nodeType == 3)targ = targ.parentNode;// defeat Safari bug
 			return {x: e.pageX - $(targ).offset().left, y: e.pageY - $(targ).offset().top};
 		}
-	
+		function setFocusOnFlash() {    
+			var flash = document.getElementById("GOstrichLevelEditor2");
+			flash.tabIndex = 1234;  // This was needed on Chrome 23
+			flash.focus();
+		}
 		function msg_out(t) {
 			document.getElementById("msgout").value = t;
 		}
 		function json_out() {
 			document.getElementById("GOstrichLevelEditor2").json_out();
+			setFocusOnFlash();
 		}
 		function json_in() {
 			document.getElementById("GOstrichLevelEditor2").json_in(document.getElementById("msgout").value);
+			setFocusOnFlash();
 		}
 		function swf_undo() {
 			document.getElementById("GOstrichLevelEditor2").undo();
+			setFocusOnFlash();
 		}
 		function toggle_ndir(tar) {
 			var a = document.querySelectorAll(".ndir_button");
@@ -105,14 +114,17 @@
 		function change_ndir(tar) {
 			document.getElementById("GOstrichLevelEditor2").change_ndir(tar);
 			toggle_ndir(tar);
+			setFocusOnFlash();
 		}
 		function toggle_line_labels() {
 			var status = document.getElementById("GOstrichLevelEditor2").toggle_line_labels();
 			document.getElementById("toggle_line_labels").value = "Line Labels:"+status;
+			setFocusOnFlash();
 		}
 		function toggle_can_fall() {
 			var status = document.getElementById("GOstrichLevelEditor2").toggle_can_fall();
 			document.getElementById("toggle_can_fall").value = "Fall On Line:"+status;
+			setFocusOnFlash();
 		}
 		function change_object_type(t) {
 			document.getElementById("GOstrichLevelEditor2").change_object_type(t);
@@ -122,6 +134,7 @@
 				obj[i].disabled = false;
 			}
 			document.getElementById(t).disabled = true;
+			setFocusOnFlash();
 		}
 		function push_island_hei() {
 			var val = document.getElementById("isl_hei").value;
@@ -131,6 +144,7 @@
 			} else {
 				alert("nonnumeric value");
 			}
+			setFocusOnFlash();
 		}
 		function shift_all(dir) {
 			var val = document.getElementById("shift_entry").value;
@@ -141,15 +155,19 @@
 			} else {
 				alert("nonnumeric value");
 			}
+			setFocusOnFlash();
 		}
 		function change_ground_detail_val(val) {
 			document.getElementById("GOstrichLevelEditor2").change_ground_detail_val(val);
+			setFocusOnFlash();
 		}
 		function change_ground_type_val(val) {
 			document.getElementById("GOstrichLevelEditor2").change_ground_type_val(val);
+			setFocusOnFlash();
 		}
 		function zoom(val) {
 			document.getElementById("GOstrichLevelEditor2").zoom(val);
+			setFocusOnFlash();
 		}
 		
 		var _camera_g;
@@ -190,6 +208,7 @@
 			_camera_pos.y = pos.y;
 			update_camera_canvas();
 			update_camera_message();
+			setFocusOnFlash();
 		}
 		function update_camera_canvas() {
 			_camera_g.fillStyle = "#FFFFFF";
@@ -217,6 +236,7 @@
 			_camera_pos.z = ui.value;
 			update_camera_canvas();
 			update_camera_message();
+			setFocusOnFlash();
 		}
 		
 		
@@ -229,7 +249,7 @@
 		<param name="scale" value="noScale">
 		<param name="allowScriptAccess" value="always">
 		<param name="bgcolor" value="">
-		<param name="wmode" value="direct">
+		<param name="wmode" value="opaque">
 	</object>
 	<div id="swfcontrols" class="controls">
 		<b>Editor Controls</b><br />
@@ -253,8 +273,9 @@
 		<hr />
 		<b>ground type control</b><br/>
 		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('open');" checked /><font color="#0000FF">open</font>
-		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('cave');"/><font color="#C7C7C7">cave</font>
+		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('cave');"/><font color="#C7C7C7">cave</font><br/>
 		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('bridge');"/><font color="#5E2612">bridge</font>
+		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('lab');"/><font color="#555555">lab</font>
 	</div>
 	
 	<div id="grounddetailcontrols" class="controls">
@@ -265,7 +286,10 @@
 		<br/>
 		<input type="radio" name="grounddetailcontrols" value="4" onclick="change_ground_detail_val(4);"/>
 		<input type="radio" name="grounddetailcontrols" value="5" onclick="change_ground_detail_val(5);"/>
-		<input type="radio" name="grounddetailcontrols" value="6" onclick="change_ground_detail_val(6);"/>
+		<input type="radio" name="grounddetailcontrols" value="6" onclick="change_ground_detail_val(6);"/><br/>
+		<input type="radio" name="grounddetailcontrols" value="7" onclick="change_ground_detail_val(7);"/>
+		<input type="radio" name="grounddetailcontrols" value="8" onclick="change_ground_detail_val(8);"/>
+		<input type="radio" name="grounddetailcontrols" value="9" onclick="change_ground_detail_val(9);"/>
 	</div>
 	
 	<div id="cameracontrols" class="controls">
@@ -296,6 +320,9 @@
 		<button id="spikevine"	   class="objecttype_button"  ></button><br />
 		<button id="swingvine"	   class="objecttype_button"  ></button><br />
 		<button id="robotminion"   class="objecttype_button"  ></button><br />
+		<button id="launcherrobot" class="objecttype_button"  ></button><br />
+		<button id="copter" 	   class="objecttype_button"  ></button><br />
+		<button id="labwall" 	   class="objecttype_button"  ></button><br />
 	</div>
 
 	<textarea id="msgout" style="width:100%;height:200px;">

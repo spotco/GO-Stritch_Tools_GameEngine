@@ -216,7 +216,7 @@ package {
 				desel_all();
 				
 				var newobj:GameObject;
-				if (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER || cur_obj_type == GameObject.OBJ_CAMERA_AREA || cur_obj_type == GameObject.OBJ_ISLAND_FILL) {
+				if (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER || cur_obj_type == GameObject.OBJ_CAMERA_AREA || cur_obj_type == GameObject.OBJ_ISLAND_FILL || cur_obj_type == GameObject.OBJ_LABWALL) {
 					if (!pts[0]) {
 						return;
 					}
@@ -475,6 +475,8 @@ package {
 					ground_type = LineIsland.GROUND_TYPE_CAVE;
 				} else if (i.ground == LineIsland.GROUND_TYPE_BRIDGE) {
 					ground_type = LineIsland.GROUND_TYPE_BRIDGE;
+				} else if (i.ground == LineIsland.GROUND_TYPE_LAB) {
+					ground_type = LineIsland.GROUND_TYPE_LAB;
 				}
 				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y,ground_type, i.ndir, i.label, Number(i.hei), Boolean(i.can_fall));
 				lines.push(nline);
@@ -495,7 +497,7 @@ package {
 				
 				if (type_class == GameObject.OBJ_CAMERA_AREA) {
 					nobj = new CameraAreaGameObject(x, y, type_class, Number(o.width), Number(o.height), o.camera);
-				} else if (type_class == GameObject.OBJ_WATER || type_class == GameObject.OBJ_BLOCKER || type_class == GameObject.OBJ_CAVEWALL || type_class == GameObject.OBJ_ISLAND_FILL) {					
+				} else if (type_class == GameObject.OBJ_WATER || type_class == GameObject.OBJ_BLOCKER || type_class == GameObject.OBJ_CAVEWALL || type_class == GameObject.OBJ_ISLAND_FILL || type_class == GameObject.OBJ_LABWALL) {					
 					nobj = new AreaGameObject(x, y, type_class, Number(o.width), Number(o.height), label);
 				} else if (type_class == GameObject.OBJ_BONE) {
 					nobj = new DogBoneGameObject(x, y, Number(o.bid));

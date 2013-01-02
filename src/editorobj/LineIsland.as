@@ -11,6 +11,7 @@ package editorobj {
 		public static var GROUND_TYPE_OPEN:String = "open";
 		public static var GROUND_TYPE_CAVE:String = "cave";
 		public static var GROUND_TYPE_BRIDGE:String = "bridge";
+		public static var GROUND_TYPE_LAB:String = "lab";
 		
 		public var x1:Number;
 		public var y1:Number;
@@ -57,6 +58,8 @@ package editorobj {
 				return 0xC7C7C7;
 			} else if (ground_type == GROUND_TYPE_BRIDGE) {
 				return 0x5E2612;
+			} else if (ground_type == GROUND_TYPE_LAB) {
+				return 0x555555;
 			} else {
 				return 0x0000FF;
 			}
