@@ -75,7 +75,7 @@
 		var _camera_g;
 		var _camera_canvas_size;
 		var _camera_pos = {x:140/2,y:80/2,z:50};
-		$(function() {
+		function init(a) {
 			document.getElementById("GOstrichLevelEditor2").get_game_objs().sort().forEach(function(k){
 				$("#objectcontrols").append($("<button>").attr({"id":k,"class":"objecttype_button"})).append($("<br>"))
 			})
@@ -146,7 +146,7 @@
 			setTimeout(function() {
 				$("body").css({"text-align":"center"});//chrome bugfix
 			},100);
-		});
+		}
 		function getMousePosition(e) {
 			var targ;
 			if (!e)e = window.event;

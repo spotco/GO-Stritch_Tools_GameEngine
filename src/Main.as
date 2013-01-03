@@ -103,6 +103,7 @@ package {
 			//var b:String = '{"assert_links": 0,"objects": [],"start_y": 0,"islands": [{"y2": 309, "type": "line", "ndir": "left", "x1": 690, "hei": 50, "y1": 524, "can_fall": true, "x2": 403}],"start_x": 0}';
 			//spr.json_in(a);
 			
+			BrowserOut.msg_to_browser("init", "");
 		}
 		
 	}
