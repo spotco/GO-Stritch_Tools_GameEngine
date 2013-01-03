@@ -17,51 +17,9 @@ package  {
 		}
 		
 		
-		public static function string_to_gameobjectclass(t:String):Class {
-			if (t == "spike") {
-				return GameObject.OBJ_SPIKE;
-			} else if (t == "jumppad") {
-				return GameObject.OBJ_JUMPPAD;
-			} else if (t == "dogbone") {
-				return GameObject.OBJ_BONE;
-			} else if (t == "dogcape") {
-				return GameObject.OBJ_CAPE;
-			} else if (t == "dogrocket") {
-				return GameObject.OBJ_ROCKET;
-			} else if (t == "checkpoint") {
-				return GameObject.OBJ_CHECKPOINT;
-			} else if (t == "water") {
-				return GameObject.OBJ_WATER;
-			} else if (t == "game_end") {
-				return GameObject.OBJ_GAMEEND;
-			} else if (t == "speedup") {
-				return GameObject.OBJ_SPEEDUP;
-			} else if (t == "birdflock") {
-				return GameObject.OBJ_BIRDS;
-			} else if (t == "ground_detail") {
-				return GameObject.OBJ_GROUND_DETAIL;
-			} else if (t == "cavewall") {
-				return GameObject.OBJ_CAVEWALL;
-			} else if (t == "blocker") {
-				return GameObject.OBJ_BLOCKER;
-			} else if (t == "camera_area") {
-				return GameObject.OBJ_CAMERA_AREA;
-			} else if (t == "spikevine") {
-				return GameObject.OBJ_SPIKEVINE;
-			} else if (t == "breakable_wall") {
-				return GameObject.OBJ_BREAKABLE_WALL;
-			} else if (t == "island_fill") {
-				return GameObject.OBJ_ISLAND_FILL;
-			} else if (t == "swingvine") {
-				return GameObject.OBJ_SWINGVINE;
-			} else if (t == "robotminion") {
-				return GameObject.OBJ_ROBOTMINION;
-			} else if (t == "launcherrobot") {
-				return GameObject.OBJ_LAUNCHERROBOT;
-			} else if (t == "copter") {
-				return GameObject.OBJ_COPTER;
-			} else if (t == "labwall") {
-				return GameObject.OBJ_LABWALL;
+		public static function string_to_gameobjectclass(t:String) {
+			if (GameObject.string_to_gameobj(t)) {
+				return GameObject.string_to_gameobj(t);
 			} else {
 				BrowserOut.msg_to_browser("console.log", "error in str_to_gameobj in common");
 				return null;

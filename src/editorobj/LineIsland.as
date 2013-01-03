@@ -8,11 +8,15 @@ package editorobj {
 		public static var NDIR_LEFT:String = "left";
 		public static var NDIR_RIGHT:String = "right";
 		
-		public static var GROUND_TYPE_OPEN:String = "open";
-		public static var GROUND_TYPE_CAVE:String = "cave";
-		public static var GROUND_TYPE_BRIDGE:String = "bridge";
-		public static var GROUND_TYPE_LAB:String = "lab";
+		public static var DEFAULT_GROUNDTYPE = "open";
 		
+		private static var GROUND_TYPE_ = {
+			"cave":0xC7C7C7,
+			"bridge":0x5E2612,
+			"lab":0x555555,
+			"open":0x0000FF
+		}
+			
 		public var x1:Number;
 		public var y1:Number;
 		public var x2:Number;
@@ -22,6 +26,28 @@ package editorobj {
 		public var label:String;
 		public var hei:Number;
 		public var ground_type:String;
+		
+		public static function is_groundtype(t:String):Boolean {
+			for (var type:String in GROUND_TYPE_) {
+				if (type == t) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		public static function get_ground_types() {
+			var t = { };
+			for (var k:String in GROUND_TYPE_) {
+				var tmp:String = GROUND_TYPE_[k].toString(16);
+				while (tmp.length < 6) {
+					tmp = "0" + tmp;
+				}
+				tmp = "#" + tmp;
+				t[k] = tmp;
+			}
+			return t;
+		}
 		
 		public function LineIsland(x1:Number,y1:Number,x2:Number,y2:Number,ground_type:String,dir:String = "left",label:String = null,hei:Number=50,can_fall:Boolean = true) {
 			position(x1, y1, x2, y2);
@@ -54,14 +80,10 @@ package editorobj {
 		}
 		
 		private function get_fill_color():uint {
-			if (ground_type == GROUND_TYPE_CAVE) {
-				return 0xC7C7C7;
-			} else if (ground_type == GROUND_TYPE_BRIDGE) {
-				return 0x5E2612;
-			} else if (ground_type == GROUND_TYPE_LAB) {
-				return 0x555555;
+			if (GROUND_TYPE_[ground_type]) {
+				return GROUND_TYPE_[ground_type];
 			} else {
-				return 0x0000FF;
+				return 0x00FF00;
 			}
 		}
 		

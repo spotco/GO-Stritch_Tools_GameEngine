@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,7 +44,7 @@
 		#cameracontrols {
 			width:300px;
 			white-space:normal;
-			top:506px;
+			top:530px;
 		}
 		input {
 			height:30px;
@@ -54,8 +53,9 @@
 			float:left;
 			margin:20px;
 		}
+		#cameracontrols>b{float:left;}
 		#camera_zoom_label {
-			float:left;
+			float:right;
 			font-size:smaller;
 			
 		}
@@ -72,6 +72,81 @@
 	</style>
 	
 	<script type="text/javascript">
+		var _camera_g;
+		var _camera_canvas_size;
+		var _camera_pos = {x:140/2,y:80/2,z:50};
+		$(function() {
+			document.getElementById("GOstrichLevelEditor2").get_game_objs().sort().forEach(function(k){
+				$("#objectcontrols").append($("<button>").attr({"id":k,"class":"objecttype_button"})).append($("<br>"))
+			})
+			
+			var gt = document.getElementById("GOstrichLevelEditor2").get_ground_types();
+			var gta = [];
+			for(var key in gt) {
+				gta.push(key)
+			}
+			gta.forEach(function(i,ind) {
+				$("#groundtypecontrols").after(
+					$("<input>").attr({
+						"id":i,"type":"radio","name":"groundtypecontrols"
+					}).click(function(){
+						change_ground_type_val(i);
+					}).after(
+						$("<label>").text(i).css({"color":gt[i]}).attr({"for":i})
+					).before(
+						ind%2==1?$("<br>"):null
+					)
+				)
+			});
+			$("#open").prop("checked",true)
+			
+			var gdtlm = document.getElementById("GOstrichLevelEditor2").get_num_ground_details();
+			var gdtlma = [];
+			for(var i = 1;gdtlma.push(i),i<gdtlm;i++);
+			gdtlma.forEach(function(i) {
+				$("#grounddetailcontrols").append(
+					$("<input>").attr({
+						"type":"radio","name":"grounddetailcontrols","value":i,"id":"grounddetailcontrols_"+i
+					}).click(function() {
+						change_ground_detail_val(i)
+					}).after(
+						i%3==0?$("<br>"):null
+					)
+				)
+			});
+		
+			$("#objectcontrols button").each(function(i,e) {
+				e = $(e);
+				e.text(e.attr("id"));
+				e.attr({onclick:"change_object_type('"+e.attr("id")+"');"});
+				e.append( $("<img>").attr({"src":"imgs/"+e.attr("id")+".png"}) );
+			});
+			
+			$("#grounddetailcontrols>input").each(function(i,e) {
+				e = $(e);
+				e.after(
+					$("<label>").attr({"for":e.attr("id")}).append(
+						$("<img>").attr({"src":"imgs/BG1_ground_detail/BG1_detail_"+e.attr("value")+".png"})
+					)
+				);
+			});
+			$("#grounddetailcontrols_1").prop("checked",true)
+			
+			document.getElementById("dogbone").disabled = true;
+		
+			_camera_canvas_size = {wid:document.getElementById("camera_canvas").width,hei:document.getElementById("camera_canvas").height};
+			_camera_g = document.getElementById("camera_canvas").getContext("2d");
+			document.getElementById("camera_canvas").addEventListener("click",function(e){ camera_canvas_click(getMousePosition(e)); });
+			update_camera_canvas();
+			$("#camera_zoom_slider").slider({ orientation: "vertical", min:40, max:200, value:50, change:camera_zoom_slider_update });
+			update_camera_message();
+			$(".controls").draggable({handle:"b"});
+			$('.controls > b').css('cursor', 'move');
+			$("body").css({"text-align":"left"});
+			setTimeout(function() {
+				$("body").css({"text-align":"center"});//chrome bugfix
+			},100);
+		});
 		function getMousePosition(e) {
 			var targ;
 			if (!e)e = window.event;
@@ -159,7 +234,7 @@
 		}
 		function change_ground_detail_val(val) {
 			document.getElementById("GOstrichLevelEditor2").change_ground_detail_val(val);
-			setFocusOnFlash();
+			change_object_type("ground_detail");
 		}
 		function change_ground_type_val(val) {
 			document.getElementById("GOstrichLevelEditor2").change_ground_type_val(val);
@@ -169,38 +244,6 @@
 			document.getElementById("GOstrichLevelEditor2").zoom(val);
 			setFocusOnFlash();
 		}
-		
-		var _camera_g;
-		var _camera_canvas_size;
-		var _camera_pos = {x:140/2,y:80/2,z:50};
-		$(function() {
-			$("#objectcontrols button").each(function(i,e) {
-				e = $(e);
-				e.text(e.attr("id"));
-				e.attr({onclick:"change_object_type('"+e.attr("id")+"');"});
-				e.append( $("<img>").attr({"src":"imgs/"+e.attr("id")+".png"}) );
-			});
-			
-			$("#grounddetailcontrols input").each(function(i,e) {
-				e = $(e);
-				e.after($("<img>").attr({"src":"imgs/BG1_ground_detail/BG1_detail_"+e.attr("value")+".png"}));
-			});
-			
-			document.getElementById("dogbone").disabled = true;
-		
-			_camera_canvas_size = {wid:document.getElementById("camera_canvas").width,hei:document.getElementById("camera_canvas").height};
-			_camera_g = document.getElementById("camera_canvas").getContext("2d");
-			document.getElementById("camera_canvas").addEventListener("click",function(e){ camera_canvas_click(getMousePosition(e)); });
-			update_camera_canvas();
-			$("#camera_zoom_slider").slider({ orientation: "vertical", min:40, max:200, value:50, change:camera_zoom_slider_update });
-			update_camera_message();
-			$(".controls").draggable({handle:"b"});
-			$('.controls > b').css('cursor', 'move');
-			$("body").css({"text-align":"left"});
-			setTimeout(function() {
-				$("body").css({"text-align":"center"});//chrome bugfix
-			},100);
-		});
 		function camera_canvas_click(pos) {
 			pos.y = -pos.y + _camera_canvas_size.hei;
 			pos.y = Math.round(pos.y);
@@ -224,7 +267,7 @@
 			_camera_g.stroke();
 		}
 		function update_camera_message() {
-			var send_pos = {x:(_camera_pos.x*2), y:(_camera_pos.y*2), z:_camera_pos.z};
+			var send_pos = {x:(Math.floor(_camera_pos.x)*2), y:(Math.floor(_camera_pos.y)*2), z:Math.floor(_camera_pos.z)};
 			$("#camera_zoom_label").html("x:"+ send_pos.x + " y:" + send_pos.y + " z:" + send_pos.z);
 			if (document.getElementById("GOstrichLevelEditor2").change_zoom) {
 				document.getElementById("GOstrichLevelEditor2").change_zoom(send_pos);
@@ -257,11 +300,11 @@
 		<input type="button" value="Undo (Z)" onclick="swf_undo()" /><br />
 		<input type="button" value="Line Labels:false" id="toggle_line_labels" onclick="toggle_line_labels()" /><br />
 		<input type="button" value="Fall On Line:true" id="toggle_can_fall" onclick="toggle_can_fall()" /><br />
-		<input type="button" value="zoom in" onclick="zoom(0.1);" />
-		<input type="button" value="zoom out" onclick="zoom(-0.1);" />
+		<input type="button" value="zoom+" onclick="zoom(0.1);" />
+		<input type="button" value="zoom-" onclick="zoom(-0.1);" />
 		<hr />
 		<input type="text" id="isl_hei" value="50" size=3 />
-		<input type="button" value="push_isl_hei" id="island_hei_submit" onclick="push_island_hei()" /><br />
+		<input type="button" value="Set Line Height" id="island_hei_submit" onclick="push_island_hei()" /><br />
 		<hr />
 		<input type="text" id="shift_entry" value="50" size=3 />
 		<input type="button" value="shiftx" id="shift_submit" onclick="shift_all({x:1,y:0})" />
@@ -271,25 +314,11 @@
 		(ccw)<input type="button" value="left" class="ndir_button" onclick="change_ndir('left');" />
 		(cw)<input type="button" value="right" class="ndir_button" onclick="change_ndir('right');" />
 		<hr />
-		<b>ground type control</b><br/>
-		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('open');" checked /><font color="#0000FF">open</font>
-		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('cave');"/><font color="#C7C7C7">cave</font><br/>
-		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('bridge');"/><font color="#5E2612">bridge</font>
-		<input type="radio" name="groundtypecontrols" onclick="change_ground_type_val('lab');"/><font color="#555555">lab</font>
+		<b id="groundtypecontrols">ground type control</b><br/>
 	</div>
 	
 	<div id="grounddetailcontrols" class="controls">
 		<b>ground detail</b><br/>
-		<input type="radio" name="grounddetailcontrols" value="1" onclick="change_ground_detail_val(1);" checked />
-		<input type="radio" name="grounddetailcontrols" value="2" onclick="change_ground_detail_val(2);"/>
-		<input type="radio" name="grounddetailcontrols" value="3" onclick="change_ground_detail_val(3);"/>
-		<br/>
-		<input type="radio" name="grounddetailcontrols" value="4" onclick="change_ground_detail_val(4);"/>
-		<input type="radio" name="grounddetailcontrols" value="5" onclick="change_ground_detail_val(5);"/>
-		<input type="radio" name="grounddetailcontrols" value="6" onclick="change_ground_detail_val(6);"/><br/>
-		<input type="radio" name="grounddetailcontrols" value="7" onclick="change_ground_detail_val(7);"/>
-		<input type="radio" name="grounddetailcontrols" value="8" onclick="change_ground_detail_val(8);"/>
-		<input type="radio" name="grounddetailcontrols" value="9" onclick="change_ground_detail_val(9);"/>
 	</div>
 	
 	<div id="cameracontrols" class="controls">
@@ -301,28 +330,6 @@
 	
 	<div id="objectcontrols" class="controls">
 		<b id="objlabel">Object</b><br />
-		<button id="spike"         class="objecttype_button"  ></button><br />
-		<button id="jumppad"       class="objecttype_button"  ></button><br />
-		<button id="dogbone"       class="objecttype_button"  ></button><br />
-		<button id="dogcape"       class="objecttype_button"  ></button><br />
-		<button id="dogrocket"     class="objecttype_button"  ></button><br />
-		<button id="checkpoint"    class="objecttype_button"  ></button><br />
-		<button id="water"         class="objecttype_button"  ></button><br />
-		<button id="game_end"      class="objecttype_button"  ></button><br />
-		<button id="birdflock"     class="objecttype_button"  ></button><br />
-		<button id="speedup"       class="objecttype_button"  ></button><br />
-		<button id="ground_detail" class="objecttype_button"  ></button><br />
-		<button id="cavewall"      class="objecttype_button"  ></button><br />
-		<button id="island_fill"   class="objecttype_button"  ></button><br />
-		<button id="blocker"       class="objecttype_button"  ></button><br />
-		<button id="camera_area"   class="objecttype_button"  ></button><br />
-		<button id="breakable_wall" class="objecttype_button" ></button><br />
-		<button id="spikevine"	   class="objecttype_button"  ></button><br />
-		<button id="swingvine"	   class="objecttype_button"  ></button><br />
-		<button id="robotminion"   class="objecttype_button"  ></button><br />
-		<button id="launcherrobot" class="objecttype_button"  ></button><br />
-		<button id="copter" 	   class="objecttype_button"  ></button><br />
-		<button id="labwall" 	   class="objecttype_button"  ></button><br />
 	</div>
 
 	<textarea id="msgout" style="width:100%;height:200px;">

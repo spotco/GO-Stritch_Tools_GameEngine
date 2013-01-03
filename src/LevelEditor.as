@@ -1,4 +1,5 @@
 package {
+	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -29,7 +30,7 @@ package {
 		var redo_stack:Array = new Array;
 		var bids_list:Array;
 		var line_ndir_mode:String = LineIsland.NDIR_LEFT;
-		var line_ground_mode:String = LineIsland.GROUND_TYPE_OPEN;
+		var line_ground_mode:String = LineIsland.DEFAULT_GROUNDTYPE;
 		
 		//[{pt:null,obj:{ClickPoint}},{pt:LineIsland.PT1,obj:{LineIsland}}]
 		public var move_tars:Array = new Array();
@@ -215,9 +216,11 @@ package {
 			} else if (lastkey == Keyboard.Q) {
 				desel_all();
 				
+				try {
 				var newobj:GameObject;
-				if (cur_obj_type == GameObject.OBJ_BLOCKER || cur_obj_type == GameObject.OBJ_CAVEWALL || cur_obj_type == GameObject.OBJ_WATER || cur_obj_type == GameObject.OBJ_CAMERA_AREA || cur_obj_type == GameObject.OBJ_ISLAND_FILL || cur_obj_type == GameObject.OBJ_LABWALL) {
+				if (GameObject.is_areagameobject(cur_obj_type)) {
 					if (!pts[0]) {
+						BrowserOut.msg_to_browser("console.log", "place ref point first with areaobj");
 						return;
 					}
 					var wid = pts[pts.length - 1].x - click_x;
@@ -233,13 +236,17 @@ package {
 					} else {
 						newobj = new AreaGameObject(click_x, click_y, cur_obj_type, wid, hei, String(obj_label_count));
 					}
+					BrowserOut.msg_to_browser("console.log", "area"+cur_obj_type);
+					
 				} else if (cur_obj_type == GameObject.OBJ_GROUND_DETAIL) {
 					newobj = new GroundDetailGameObject(click_x, click_y, cur_ground_detail_val, printf("(%s)gd_img:%1.0f", String(obj_label_count), cur_ground_detail_val));
-				
+					BrowserOut.msg_to_browser("console.log", "gdetail"+cur_obj_type);
+					
 				} else if (cur_obj_type == GameObject.OBJ_BONE) {
 					newobj = new DogBoneGameObject(click_x, click_y, get_new_bid());
+					BrowserOut.msg_to_browser("console.log", "bone"+cur_obj_type);
 					
-				} else if (cur_obj_type == GameObject.OBJ_JUMPPAD || cur_obj_type == GameObject.OBJ_SPEEDUP) {
+				} else if (GameObject.is_directedgameobject(cur_obj_type)) {
 					if (!pts[0]) {
 						return;
 					}
@@ -248,20 +255,28 @@ package {
 					var dir = new Vector3D(wid, hei, 0);
 					dir.normalize();
 					newobj = new DirectionalGameObject(click_x, click_y, cur_obj_type, {x:Common.roundDecimal(dir.x, 2),y:Common.roundDecimal(dir.y, 2)}, String(obj_label_count));
-				} else if (cur_obj_type == GameObject.OBJ_BREAKABLE_WALL || cur_obj_type == GameObject.OBJ_SPIKEVINE || cur_obj_type == GameObject.OBJ_SWINGVINE) {
+					BrowserOut.msg_to_browser("console.log", "directed"+cur_obj_type);
+					
+				} else if (GameObject.is_linegameobject(cur_obj_type)) {
 					if (!pts[0]) {
 						return;
 					}
 					newobj = new LineObject(click_x, click_y, pts[pts.length - 1].normal_x, pts[pts.length - 1].normal_y, cur_obj_type, String(obj_label_count));
+					BrowserOut.msg_to_browser("console.log", "lineobj"+cur_obj_type);
+					
 				} else {
 					newobj = new GameObject(click_x, click_y, cur_obj_type, String(obj_label_count));
+					BrowserOut.msg_to_browser("console.log", "pointobj"+cur_obj_type);
+				}
+				}catch (e:Error) {
+					BrowserOut.msg_to_browser("console.log", "EXCEPTION: "+e);
 				}
 				
 				redo_stack.splice(0,redo_stack.length);
 				objects.push(newobj);
 				addChild(newobj);
 				lastkey = 0x000000;
-				BrowserOut.msg_to_browser("console.log", printf("Added object (%i) at (%f,%f)",obj_label_count,click_x, click_y));
+				//BrowserOut.msg_to_browser("console.log", printf("Added object ("+newobj.objtype+") at (%f,%f)",click_x, click_y));
 				obj_label_count++;
 				undo_stack.push(newobj);
 			} else {
@@ -386,6 +401,7 @@ package {
 		}
 		
 		private function onKeyDown(e:KeyboardEvent) {
+			
 			lastkey = e.keyCode;
 			if (e.keyCode == Keyboard.UP || e.keyCode == Keyboard.DOWN || e.keyCode == Keyboard.LEFT || e.keyCode == Keyboard.RIGHT) {
 				move(e);
@@ -470,13 +486,9 @@ package {
 					pts.push(pt2);
 				}
 				
-				var ground_type:String = LineIsland.GROUND_TYPE_OPEN;
-				if (i.ground == LineIsland.GROUND_TYPE_CAVE) {
-					ground_type = LineIsland.GROUND_TYPE_CAVE;
-				} else if (i.ground == LineIsland.GROUND_TYPE_BRIDGE) {
-					ground_type = LineIsland.GROUND_TYPE_BRIDGE;
-				} else if (i.ground == LineIsland.GROUND_TYPE_LAB) {
-					ground_type = LineIsland.GROUND_TYPE_LAB;
+				var ground_type:String = LineIsland.DEFAULT_GROUNDTYPE;
+				if (LineIsland.is_groundtype(i.ground)) {
+					ground_type = i.ground;
 				}
 				var nline:LineIsland = new LineIsland(pt1.normal_x, pt1.normal_y, pt2.normal_x, pt2.normal_y,ground_type, i.ndir, i.label, Number(i.hei), Boolean(i.can_fall));
 				lines.push(nline);
@@ -497,14 +509,19 @@ package {
 				
 				if (type_class == GameObject.OBJ_CAMERA_AREA) {
 					nobj = new CameraAreaGameObject(x, y, type_class, Number(o.width), Number(o.height), o.camera);
-				} else if (type_class == GameObject.OBJ_WATER || type_class == GameObject.OBJ_BLOCKER || type_class == GameObject.OBJ_CAVEWALL || type_class == GameObject.OBJ_ISLAND_FILL || type_class == GameObject.OBJ_LABWALL) {					
+					
+				} else if (GameObject.is_areagameobject(type_class)) {					
 					nobj = new AreaGameObject(x, y, type_class, Number(o.width), Number(o.height), label);
+					
 				} else if (type_class == GameObject.OBJ_BONE) {
 					nobj = new DogBoneGameObject(x, y, Number(o.bid));
-				} else if (type_class == GameObject.OBJ_JUMPPAD || type_class == GameObject.OBJ_SPEEDUP) {
+					
+				} else if (GameObject.is_directedgameobject(type_class)) {
 					nobj = new DirectionalGameObject(x, y, type_class, o.dir, label);
-				} else if (type_class == GameObject.OBJ_SPIKEVINE || type_class == GameObject.OBJ_BREAKABLE_WALL) {
+					
+				} else if (GameObject.is_linegameobject(type_class)) {
 					nobj = new LineObject(x, y, o.x2, o.y2, type_class, label);
+					
 				} else if (type_class != null) {
 					if (type_class == GameObject.OBJ_GROUND_DETAIL) {
 						nobj = new GroundDetailGameObject(x, y, Number(o.img), label);

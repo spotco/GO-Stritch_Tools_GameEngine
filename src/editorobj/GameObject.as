@@ -28,77 +28,117 @@ package editorobj {
 		[Embed(source = "../../bin/imgs/copter.png")] public static var OBJ_COPTER:Class;
 		[Embed(source = "../../bin/imgs/labwall.png")] public static var OBJ_LABWALL:Class;
 		
+		private static var GAMEOBJS = {
+			"spike":OBJ_SPIKE,
+			"game_end":OBJ_GAMEEND,
+			"checkpoint":OBJ_CHECKPOINT,
+			"dogcape":OBJ_CAPE,
+			"dogrocket":OBJ_ROCKET,
+			"dogbone":OBJ_BONE,
+			"jumppad":OBJ_JUMPPAD,
+			"water":OBJ_WATER,
+			"speedup":OBJ_SPEEDUP,
+			"birdflock":OBJ_BIRDS,
+			"robotminion":OBJ_ROBOTMINION,
+			"breakable_wall":OBJ_BREAKABLE_WALL,
+			"spikevine":OBJ_SPIKEVINE,
+			"ground_detail":OBJ_GROUND_DETAIL,
+			"blocker":OBJ_BLOCKER,
+			"cavewall":OBJ_CAVEWALL,
+			"camera_area":OBJ_CAMERA_AREA,
+			"island_fill":OBJ_ISLAND_FILL,
+			"swingvine":OBJ_SWINGVINE,
+			"launcherrobot":OBJ_LAUNCHERROBOT,
+			"copter":OBJ_COPTER,
+			"labwall":OBJ_LABWALL
+		};
+		
+		private static var AREAGAMEOBJS:Array = [
+			GameObject.OBJ_BLOCKER,
+			GameObject.OBJ_CAVEWALL, 
+			GameObject.OBJ_WATER, 
+			GameObject.OBJ_CAMERA_AREA, 
+			GameObject.OBJ_ISLAND_FILL, 
+			GameObject.OBJ_LABWALL
+		];
+		
+		private static var DIRECTEDGAMEOBJS:Array = [
+			GameObject.OBJ_JUMPPAD, 
+			GameObject.OBJ_SPEEDUP,
+			GameObject.OBJ_LAUNCHERROBOT
+		];
+		
+		private static var LINEGAMEOBJS:Array = [
+			GameObject.OBJ_BREAKABLE_WALL, 
+			GameObject.OBJ_SPIKEVINE,
+			GameObject.OBJ_SWINGVINE
+		];
+		
+		/*
+		 * other special types:
+			 * Bone
+			 * CameraArea
+			 * GroundDetail
+		*/
+		
+		public static function init() {
+			var tmp = { };
+			for (var key:String in GAMEOBJS) {
+				tmp[GAMEOBJS[key].toString()] = key;
+			}
+			for (var okey:String in tmp) {
+				GAMEOBJS[okey] = tmp[okey];
+			}
+		}
+		
+		public static function get_game_objs():Array {
+			var t:Array = [];
+			for (var key:String in GAMEOBJS) {
+				if (key.indexOf("[") == -1) {
+					t.push(key);
+				}
+			}
+			return t;
+		}
+		
+		public static function string_to_gameobj(t:String):Class {
+			return GAMEOBJS[t];
+		}
+		
+		public static function gameobj_to_string(c:Class):String {
+			var cl = c;
+			return GAMEOBJS[cl.toString()];
+		}
+		
+		public static function is_areagameobject(c:Class):Boolean {
+			return AREAGAMEOBJS.indexOf(c) != -1;
+		}
+		
+		public static function is_directedgameobject(c:Class):Boolean {
+			return DIRECTEDGAMEOBJS.indexOf(c) != -1;
+		}
+		
+		public static function is_linegameobject(c:Class):Boolean {
+			return LINEGAMEOBJS.indexOf(c) != -1;
+		}
+		
 		public var img:DisplayObject;
 		public var objtype:String;
 		
 		public function GameObject(x:Number,y:Number,type:Class,label:String = null) {
 			super(x, y, 0x00FFFF, label);
 			
-			if (type == OBJ_SPIKE) {
-				img = new OBJ_SPIKE as Bitmap;
-				objtype = "spike";
-			} else if (type == OBJ_GAMEEND) {
-				img = new OBJ_GAMEEND as Bitmap;
-				objtype = "game_end";
-			} else if (type == OBJ_CHECKPOINT) {
-				img = new OBJ_CHECKPOINT as Bitmap;
-				objtype = "checkpoint";
-			} else if (type == OBJ_CAPE) {
-				img = new OBJ_CAPE as Bitmap;
-				objtype = "dogcape";
-			} else if (type == OBJ_ROCKET) {
-				img = new OBJ_ROCKET as Bitmap;
-				objtype = "dogrocket";
-			} else if (type == OBJ_BONE) {
-				img = new OBJ_BONE as Bitmap;
-				objtype = "dogbone";
-			} else if (type == OBJ_JUMPPAD) {
-				img = new OBJ_JUMPPAD as Bitmap;
-				objtype = "jumppad";
-			} else if (type == OBJ_WATER) {
-				img = new OBJ_WATER as Bitmap;
-				objtype = "water";
-			} else if (type == OBJ_SPEEDUP) {
-				img = new OBJ_SPEEDUP as Bitmap;
-				objtype = "speedup";
-			} else if (type == OBJ_BIRDS) {
-				img = new OBJ_BIRDS as Bitmap;
-				objtype = "birdflock";
-			} else if (type == OBJ_ROBOTMINION) {
-				img = new OBJ_ROBOTMINION as Bitmap;
-				objtype = "robotminion";
-			} else if (type == OBJ_BREAKABLE_WALL) {
-				img = new OBJ_BREAKABLE_WALL as Bitmap;
-				objtype = "breakable_wall"
-			} else if (type == OBJ_SPIKEVINE) {
-				img = new OBJ_SPIKEVINE as Bitmap;
-				objtype = "spikevine";
-			} else if (type == OBJ_GROUND_DETAIL) {
-				objtype = "ground_detail";
-			} else if (type == OBJ_BLOCKER) {
-				objtype = "blocker";
-			} else if (type == OBJ_CAVEWALL) {
-				objtype = "cavewall";
-			} else if (type == OBJ_CAMERA_AREA) {
-				objtype = "camera_area";
-			} else if (type == OBJ_ISLAND_FILL) {
-				objtype = "island_fill";
-			} else if (type == OBJ_SWINGVINE) {
-				img = new OBJ_SWINGVINE as Bitmap;
-				objtype = "swingvine";
-			} else if (type == OBJ_LAUNCHERROBOT) {
-				img = new OBJ_LAUNCHERROBOT as Bitmap;
-				objtype = "launcherrobot";
-			} else if (type == OBJ_COPTER) {
-				img = new OBJ_COPTER as Bitmap;
-				objtype = "copter";
-			} else if (type == OBJ_LABWALL) {
-				img = new OBJ_LABWALL as Bitmap;
-				objtype = "labwall";
+			if (GameObject.gameobj_to_string(type)) {
+				if (type != GameObject.OBJ_GROUND_DETAIL && !GameObject.is_areagameobject(type)) {
+					img = new type as Bitmap;
+				}
+				objtype = GameObject.gameobj_to_string(type);
 			} else {
 				objtype = "";
-				TextRenderer.render_text(Main.spr.graphics, "gobj_err in gameobject.as:"+type, 50, 50, 10);
+				TextRenderer.render_text(Main.spr.graphics, "gobj_err in gameobject.as:" + type, 50, 50, 10);
+				BrowserOut.msg_to_browser("console.log", "gobj_err in gameobject.as:" + type);
 			}
+
 			
 			if (img) {
 				addChild(img);

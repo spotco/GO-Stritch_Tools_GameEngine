@@ -51,7 +51,7 @@ package
 			//trace("\n\n" + 'input:"'+ raw+  '" , args:', rest.join(", ")) ;
             var matches : Array = [];
             var result : Object = SUBS_RE.exec(raw);
-            var match : Match;
+            var match;
             var runs : int = 0;
             var numMatches : int = 0;
             var numberVariables : int = rest.length;
@@ -188,7 +188,8 @@ package
             // beggininf os string, if it doesn't start with a substitition
             var previous : String = raw.substr(0, matches[0].startIndex);
             var subs : String;
-            for each(match in matches){
+            for each(match in matches) {
+
                 // finds out the previous string part and the next substitition
                 if (lastMatch){
                     previous = raw.substring(lastMatch.endIndex  ,  match.startIndex);
@@ -266,3 +267,4 @@ function padString(str:String, paddingNum:int, paddingChar:String=" ") : String
     
     return new Array(paddingNum).join(paddingChar).substr(0,paddingNum-str.length).concat(str);
 }
+

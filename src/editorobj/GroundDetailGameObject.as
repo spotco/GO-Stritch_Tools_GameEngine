@@ -14,6 +14,10 @@ package editorobj {
 		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_9.png")] public static var DETAIL_9:Class;
 		private static var details:Array = [null,DETAIL_1, DETAIL_2, DETAIL_3, DETAIL_4, DETAIL_5, DETAIL_6, DETAIL_7,DETAIL_8,DETAIL_9];
 		
+		public static function get_num_ground_details():int {
+			return details.length - 1;
+		}
+		
 		public var img_n:Number;
 		
 		public function GroundDetailGameObject(x:Number, y:Number, img:Number, label:String) {
