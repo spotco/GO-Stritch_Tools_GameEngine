@@ -27,6 +27,10 @@ package editorobj {
 		[Embed(source = "../../bin/imgs/launcherrobot.png")] public static var OBJ_LAUNCHERROBOT:Class;
 		[Embed(source = "../../bin/imgs/copter.png")] public static var OBJ_COPTER:Class;
 		[Embed(source = "../../bin/imgs/labwall.png")] public static var OBJ_LABWALL:Class;
+		[Embed(source = "../../bin/imgs/electricwall.png")] public static var OBJ_ELECTRICWALL:Class;
+		[Embed(source = "../../bin/imgs/labentrance.png")] public static var OBJ_LABENTRANCE:Class;
+		[Embed(source = "../../bin/imgs/labexit.png")] public static var OBJ_LABEXIT:Class;
+		[Embed(source = "../../bin/imgs/enemyalert.png")] public static var OBJ_ENEMYALERT:Class;
 		
 		private static var GAMEOBJS = {
 			"spike":OBJ_SPIKE,
@@ -50,7 +54,11 @@ package editorobj {
 			"swingvine":OBJ_SWINGVINE,
 			"launcherrobot":OBJ_LAUNCHERROBOT,
 			"copter":OBJ_COPTER,
-			"labwall":OBJ_LABWALL
+			"labwall":OBJ_LABWALL,
+			"electricwall":OBJ_ELECTRICWALL,
+			"labentrance":OBJ_LABENTRANCE,
+			"labexit":OBJ_LABEXIT,
+			"enemyalert":OBJ_ENEMYALERT
 		};
 		
 		private static var AREAGAMEOBJS:Array = [
@@ -59,7 +67,8 @@ package editorobj {
 			GameObject.OBJ_WATER, 
 			GameObject.OBJ_CAMERA_AREA, 
 			GameObject.OBJ_ISLAND_FILL, 
-			GameObject.OBJ_LABWALL
+			GameObject.OBJ_LABWALL,
+			GameObject.OBJ_ENEMYALERT
 		];
 		
 		private static var DIRECTEDGAMEOBJS:Array = [
@@ -71,7 +80,8 @@ package editorobj {
 		private static var LINEGAMEOBJS:Array = [
 			GameObject.OBJ_BREAKABLE_WALL, 
 			GameObject.OBJ_SPIKEVINE,
-			GameObject.OBJ_SWINGVINE
+			GameObject.OBJ_SWINGVINE,
+			GameObject.OBJ_ELECTRICWALL
 		];
 		
 		/*
