@@ -74,7 +74,7 @@
 	<script type="text/javascript">
 		var _camera_g;
 		var _camera_canvas_size;
-		var _camera_pos = {x:140/2,y:80/2,z:50};
+		var _camera_pos = {x:120/2,y:110/2,z:160};
 		function init(a) {
 			document.getElementById("GOstrichLevelEditor2").get_game_objs().sort().forEach(function(k){
 				$("#objectcontrols").append($("<button>").attr({"id":k,"class":"objecttype_button"})).append($("<br>"))
@@ -138,7 +138,7 @@
 			_camera_g = document.getElementById("camera_canvas").getContext("2d");
 			document.getElementById("camera_canvas").addEventListener("click",function(e){ camera_canvas_click(getMousePosition(e)); });
 			update_camera_canvas();
-			$("#camera_zoom_slider").slider({ orientation: "vertical", min:40, max:200, value:50, change:camera_zoom_slider_update });
+			$("#camera_zoom_slider").slider({ orientation: "vertical", min:100, max:300, value:180, change:camera_zoom_slider_update });
 			update_camera_message();
 			$(".controls").draggable({handle:"b"});
 			$('.controls > b').css('cursor', 'move');
@@ -261,7 +261,7 @@
 			_camera_g.beginPath();
 			_camera_g.lineWidth = 5;
 			
-			var circsize = 3 + 12 * ((200 - _camera_pos.z)/160);
+			var circsize = 3 + 12 * ((300 - _camera_pos.z)/300);
 			_camera_g.arc(_camera_pos.x, -_camera_pos.y + _camera_canvas_size.hei ,circsize,0, 2 * Math.PI,false);
 			_camera_g.closePath();
 			_camera_g.stroke();

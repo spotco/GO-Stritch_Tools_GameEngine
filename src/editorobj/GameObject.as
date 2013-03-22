@@ -1,4 +1,4 @@
-package editorobj {
+ package editorobj {
 	import com.adobe.images.BitString;
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
