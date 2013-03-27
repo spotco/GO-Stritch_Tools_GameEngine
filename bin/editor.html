@@ -55,7 +55,7 @@
 		}
 		#cameracontrols>b{float:left;}
 		#camera_zoom_label {
-			float:right;
+			float:left;
 			font-size:smaller;
 			
 		}
@@ -253,6 +253,12 @@
 			update_camera_message();
 			setFocusOnFlash();
 		}
+		function reset_camera() {
+			_camera_pos = {x:120/2,y:110/2,z:160};
+			update_camera_canvas();
+			update_camera_message();
+			setFocusOnFlash();
+		}
 		function update_camera_canvas() {
 			_camera_g.fillStyle = "#FFFFFF";
 			_camera_g.fillRect(0,0,_camera_canvas_size.wid,_camera_canvas_size.hei);
@@ -322,7 +328,7 @@
 	</div>
 	
 	<div id="cameracontrols" class="controls">
-		<b>camera control</b> <span id="camera_zoom_label"></span><br/>
+		<b>cam</b><span id="camera_zoom_label"></span><button onclick="reset_camera();">reset</button><br/>
 		<div id="camera_zoom_slider"></div>
 		<canvas id="camera_canvas"  width="240px" height="160px"></canvas>
 		

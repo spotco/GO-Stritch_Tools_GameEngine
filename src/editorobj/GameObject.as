@@ -31,6 +31,8 @@
 		[Embed(source = "../../bin/imgs/labentrance.png")] public static var OBJ_LABENTRANCE:Class;
 		[Embed(source = "../../bin/imgs/labexit.png")] public static var OBJ_LABEXIT:Class;
 		[Embed(source = "../../bin/imgs/enemyalert.png")] public static var OBJ_ENEMYALERT:Class;
+		[Embed(source = "../../bin/imgs/tutorial.png")] public static var OBJ_TUTORIAL:Class;
+		[Embed(source = "../../bin/imgs/tutorialend.png")] public static var OBJ_TUTORIALEND:Class;
 		
 		private static var GAMEOBJS = {
 			"spike":OBJ_SPIKE,
@@ -58,7 +60,9 @@
 			"electricwall":OBJ_ELECTRICWALL,
 			"labentrance":OBJ_LABENTRANCE,
 			"labexit":OBJ_LABEXIT,
-			"enemyalert":OBJ_ENEMYALERT
+			"enemyalert":OBJ_ENEMYALERT,
+			"tutorial":OBJ_TUTORIAL,
+			"tutorialend":OBJ_TUTORIALEND
 		};
 		
 		private static var AREAGAMEOBJS:Array = [

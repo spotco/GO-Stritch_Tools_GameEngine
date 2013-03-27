@@ -12,7 +12,27 @@ package editorobj {
 		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_7.png")] public static var DETAIL_7:Class;
 		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_8.png")] public static var DETAIL_8:Class;
 		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_9.png")] public static var DETAIL_9:Class;
-		private static var details:Array = [null,DETAIL_1, DETAIL_2, DETAIL_3, DETAIL_4, DETAIL_5, DETAIL_6, DETAIL_7,DETAIL_8,DETAIL_9];
+		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_10.png")] public static var DETAIL_10_SIGN_VINES:Class;
+		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_11.png")] public static var DETAIL_11_SIGN_WARNING:Class;
+		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_12.png")] public static var DETAIL_12_SIGN_ROCKS:Class;
+		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_13.png")] public static var DETAIL_13_SIGN_WATER:Class;
+		[Embed(source = "../../bin/imgs/BG1_ground_detail/BG1_detail_14.png")] public static var DETAIL_14_SIGN_SPIKES:Class;
+		private static var details:Array = [null,
+			DETAIL_1, 
+			DETAIL_2, 
+			DETAIL_3, 
+			DETAIL_4, 
+			DETAIL_5, 
+			DETAIL_6, 
+			DETAIL_7,
+			DETAIL_8,
+			DETAIL_9,
+			DETAIL_10_SIGN_VINES,
+			DETAIL_11_SIGN_WARNING,
+			DETAIL_12_SIGN_ROCKS,
+			DETAIL_13_SIGN_WATER,
+			DETAIL_14_SIGN_SPIKES
+		];
 		
 		public static function get_num_ground_details():int {
 			return details.length - 1;
