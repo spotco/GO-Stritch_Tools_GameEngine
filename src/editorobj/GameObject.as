@@ -33,6 +33,8 @@
 		[Embed(source = "../../bin/imgs/enemyalert.png")] public static var OBJ_ENEMYALERT:Class;
 		[Embed(source = "../../bin/imgs/tutorial.png")] public static var OBJ_TUTORIAL:Class;
 		[Embed(source = "../../bin/imgs/tutorialend.png")] public static var OBJ_TUTORIALEND:Class;
+		[Embed(source = "../../bin/imgs/coin.png")] public static var OBJ_COIN:Class;
+		
 		
 		private static var GAMEOBJS = {
 			"spike":OBJ_SPIKE,
@@ -62,7 +64,8 @@
 			"labexit":OBJ_LABEXIT,
 			"enemyalert":OBJ_ENEMYALERT,
 			"tutorial":OBJ_TUTORIAL,
-			"tutorialend":OBJ_TUTORIALEND
+			"tutorialend":OBJ_TUTORIALEND,
+			"coin":OBJ_COIN
 		};
 		
 		private static var AREAGAMEOBJS:Array = [
