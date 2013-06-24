@@ -16,7 +16,7 @@
 		[Embed(source = "../../bin/imgs/water.png")] public static var OBJ_WATER:Class;
 		[Embed(source = "../../bin/imgs/birdflock.png")] public static var OBJ_BIRDS:Class;
 		[Embed(source = "../../bin/imgs/ground_detail.png")] public static var OBJ_GROUND_DETAIL:Class;
-		[Embed(source = "../../bin/imgs/cavewall.png")] public static var OBJ_CAVEWALL:Class;
+		[Embed(source = "../../bin/imgs/rocketwall.png")] public static var OBJ_ROCKETWALL:Class;
 		[Embed(source = "../../bin/imgs/blocker.png")] public static var OBJ_BLOCKER:Class;
 		[Embed(source = "../../bin/imgs/camera_area.png")] public static var OBJ_CAMERA_AREA:Class;
 		[Embed(source = "../../bin/imgs/spikevine.png")] public static var OBJ_SPIKEVINE:Class;
@@ -52,7 +52,7 @@
 			"spikevine":OBJ_SPIKEVINE,
 			"ground_detail":OBJ_GROUND_DETAIL,
 			"blocker":OBJ_BLOCKER,
-			"cavewall":OBJ_CAVEWALL,
+			"rocketwall":OBJ_ROCKETWALL,
 			"camera_area":OBJ_CAMERA_AREA,
 			"island_fill":OBJ_ISLAND_FILL,
 			"swingvine":OBJ_SWINGVINE,
@@ -70,7 +70,7 @@
 		
 		private static var AREAGAMEOBJS:Array = [
 			GameObject.OBJ_BLOCKER,
-			GameObject.OBJ_CAVEWALL, 
+			GameObject.OBJ_ROCKETWALL, 
 			GameObject.OBJ_WATER, 
 			GameObject.OBJ_CAMERA_AREA, 
 			GameObject.OBJ_ISLAND_FILL, 
