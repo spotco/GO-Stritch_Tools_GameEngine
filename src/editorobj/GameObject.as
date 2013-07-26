@@ -34,6 +34,7 @@
 		[Embed(source = "../../bin/imgs/tutorial.png")] public static var OBJ_TUTORIAL:Class;
 		[Embed(source = "../../bin/imgs/tutorialend.png")] public static var OBJ_TUTORIALEND:Class;
 		[Embed(source = "../../bin/imgs/coin.png")] public static var OBJ_COIN:Class;
+		[Embed(source = "../../bin/imgs/progressdisp.png")] public static var OBJ_PROGRESSDISP:Class;
 		
 		
 		private static var GAMEOBJS = {
@@ -65,7 +66,8 @@
 			"enemyalert":OBJ_ENEMYALERT,
 			"tutorial":OBJ_TUTORIAL,
 			"tutorialend":OBJ_TUTORIALEND,
-			"coin":OBJ_COIN
+			"coin":OBJ_COIN,
+			"progressdisp":OBJ_PROGRESSDISP
 		};
 		
 		private static var AREAGAMEOBJS:Array = [
