@@ -35,6 +35,8 @@
 		[Embed(source = "../../bin/imgs/tutorialend.png")] public static var OBJ_TUTORIALEND:Class;
 		[Embed(source = "../../bin/imgs/coin.png")] public static var OBJ_COIN:Class;
 		[Embed(source = "../../bin/imgs/progressdisp.png")] public static var OBJ_PROGRESSDISP:Class;
+		[Embed(source = "../../bin/imgs/itemgen.png")] public static var OBJ_ITEMGEN:Class;
+		[Embed(source = "../../bin/imgs/labfill.png")] public static var OBJ_LABFILL:Class;
 		
 		
 		private static var GAMEOBJS = {
@@ -67,7 +69,9 @@
 			"tutorial":OBJ_TUTORIAL,
 			"tutorialend":OBJ_TUTORIALEND,
 			"coin":OBJ_COIN,
-			"progressdisp":OBJ_PROGRESSDISP
+			"progressdisp":OBJ_PROGRESSDISP,
+			"itemgen":OBJ_ITEMGEN,
+			"labfill":OBJ_LABFILL
 		};
 		
 		private static var AREAGAMEOBJS:Array = [
@@ -77,7 +81,8 @@
 			GameObject.OBJ_CAMERA_AREA, 
 			GameObject.OBJ_ISLAND_FILL, 
 			GameObject.OBJ_LABWALL,
-			GameObject.OBJ_ENEMYALERT
+			GameObject.OBJ_ENEMYALERT,
+			GameObject.OBJ_LABFILL
 		];
 		
 		private static var DIRECTEDGAMEOBJS:Array = [
