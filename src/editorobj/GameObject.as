@@ -37,6 +37,7 @@
 		[Embed(source = "../../bin/imgs/progressdisp.png")] public static var OBJ_PROGRESSDISP:Class;
 		[Embed(source = "../../bin/imgs/itemgen.png")] public static var OBJ_ITEMGEN:Class;
 		[Embed(source = "../../bin/imgs/labfill.png")] public static var OBJ_LABFILL:Class;
+		[Embed(source = "../../bin/imgs/1upobject.png")] public static var OBJ_ONEUPOBJECT:Class;
 		
 		
 		private static var GAMEOBJS = {
@@ -71,7 +72,8 @@
 			"coin":OBJ_COIN,
 			"progressdisp":OBJ_PROGRESSDISP,
 			"itemgen":OBJ_ITEMGEN,
-			"labfill":OBJ_LABFILL
+			"labfill":OBJ_LABFILL,
+			"1upobject":OBJ_ONEUPOBJECT
 		};
 		
 		private static var AREAGAMEOBJS:Array = [
