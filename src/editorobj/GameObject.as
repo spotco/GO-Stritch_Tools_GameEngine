@@ -1,4 +1,4 @@
- package editorobj {
+	package editorobj {
 	import com.adobe.images.BitString;
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
@@ -38,6 +38,7 @@
 		[Embed(source = "../../bin/imgs/itemgen.png")] public static var OBJ_ITEMGEN:Class;
 		[Embed(source = "../../bin/imgs/labfill.png")] public static var OBJ_LABFILL:Class;
 		[Embed(source = "../../bin/imgs/1upobject.png")] public static var OBJ_ONEUPOBJECT:Class;
+		[Embed(source = "../../bin/imgs/handrail.png")] public static var OBJ_HANDRAIL:Class;
 		
 		
 		private static var GAMEOBJS = {
@@ -73,7 +74,8 @@
 			"progressdisp":OBJ_PROGRESSDISP,
 			"itemgen":OBJ_ITEMGEN,
 			"labfill":OBJ_LABFILL,
-			"1upobject":OBJ_ONEUPOBJECT
+			"1upobject":OBJ_ONEUPOBJECT,
+			"handrail":OBJ_HANDRAIL
 		};
 		
 		private static var AREAGAMEOBJS:Array = [
@@ -97,7 +99,8 @@
 			GameObject.OBJ_BREAKABLE_WALL, 
 			GameObject.OBJ_SPIKEVINE,
 			GameObject.OBJ_SWINGVINE,
-			GameObject.OBJ_ELECTRICWALL
+			GameObject.OBJ_ELECTRICWALL,
+			GameObject.OBJ_HANDRAIL
 		];
 		
 		/*
