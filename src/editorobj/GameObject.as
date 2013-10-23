@@ -39,7 +39,9 @@
 		[Embed(source = "../../bin/imgs/labfill.png")] public static var OBJ_LABFILL:Class;
 		[Embed(source = "../../bin/imgs/1upobject.png")] public static var OBJ_ONEUPOBJECT:Class;
 		[Embed(source = "../../bin/imgs/handrail.png")] public static var OBJ_HANDRAIL:Class;
-		
+		[Embed(source = "../../bin/imgs/cannon.png")] public static var OBJ_CANNON:Class;
+		[Embed(source = "../../bin/imgs/cannonmovetrack.png")] public static var OBJ_CANNONMOVETRACK:Class;
+		[Embed(source = "../../bin/imgs/cannonrotationpoint.png")] public static var OBJ_CANNONROTATIONPOINT:Class;
 		
 		private static var GAMEOBJS = {
 			"spike":OBJ_SPIKE,
@@ -75,7 +77,10 @@
 			"itemgen":OBJ_ITEMGEN,
 			"labfill":OBJ_LABFILL,
 			"1upobject":OBJ_ONEUPOBJECT,
-			"handrail":OBJ_HANDRAIL
+			"handrail":OBJ_HANDRAIL,
+			"cannon":OBJ_CANNON,
+			"cannonmovetrack":OBJ_CANNONMOVETRACK,
+			"cannonrotationpoint":OBJ_CANNONROTATIONPOINT
 		};
 		
 		private static var AREAGAMEOBJS:Array = [
@@ -92,7 +97,8 @@
 		private static var DIRECTEDGAMEOBJS:Array = [
 			GameObject.OBJ_JUMPPAD, 
 			GameObject.OBJ_SPEEDUP,
-			GameObject.OBJ_LAUNCHERROBOT
+			GameObject.OBJ_LAUNCHERROBOT,
+			GameObject.OBJ_CANNON
 		];
 		
 		private static var LINEGAMEOBJS:Array = [
@@ -100,7 +106,9 @@
 			GameObject.OBJ_SPIKEVINE,
 			GameObject.OBJ_SWINGVINE,
 			GameObject.OBJ_ELECTRICWALL,
-			GameObject.OBJ_HANDRAIL
+			GameObject.OBJ_HANDRAIL,
+			GameObject.OBJ_CANNONMOVETRACK,
+			GameObject.OBJ_CANNONROTATIONPOINT
 		];
 		
 		/*
