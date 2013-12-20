@@ -42,6 +42,8 @@
 		[Embed(source = "../../bin/imgs/cannon.png")] public static var OBJ_CANNON:Class;
 		[Embed(source = "../../bin/imgs/cannonmovetrack.png")] public static var OBJ_CANNONMOVETRACK:Class;
 		[Embed(source = "../../bin/imgs/cannonrotationpoint.png")] public static var OBJ_CANNONROTATIONPOINT:Class;
+		[Embed(source = "../../bin/imgs/dogrocketend.png")] public static var OBJ_DOGROCKETEND:Class;
+		[Embed(source = "../../bin/imgs/dogarmor.png")] public static var OBJ_DOGARMOR:Class;
 		
 		private static var GAMEOBJS = {
 			"spike":OBJ_SPIKE,
@@ -80,7 +82,9 @@
 			"handrail":OBJ_HANDRAIL,
 			"cannon":OBJ_CANNON,
 			"cannonmovetrack":OBJ_CANNONMOVETRACK,
-			"cannonrotationpoint":OBJ_CANNONROTATIONPOINT
+			"cannonrotationpoint":OBJ_CANNONROTATIONPOINT,
+			"dogrocketend":OBJ_DOGROCKETEND,
+			"dogarmor":OBJ_DOGARMOR
 		};
 		
 		private static var AREAGAMEOBJS:Array = [
@@ -91,7 +95,8 @@
 			GameObject.OBJ_ISLAND_FILL, 
 			GameObject.OBJ_LABWALL,
 			GameObject.OBJ_ENEMYALERT,
-			GameObject.OBJ_LABFILL
+			GameObject.OBJ_LABFILL,
+			GameObject.OBJ_DOGROCKETEND
 		];
 		
 		private static var DIRECTEDGAMEOBJS:Array = [
